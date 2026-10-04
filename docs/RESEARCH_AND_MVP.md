@@ -246,6 +246,8 @@ After launch, the home screen shows:
 
 1. **Pricing model:** monthly subscription in FCFA? Free tier with N messages?
 2. **WhatsApp mode for the pilot:** accept QR-code risk, or go official from day 1?
-3. **Which 1–2 business categories to start with?** (Recommendation: restaurants
-   & boutiques — high WhatsApp volume, simple catalogs.)
-4. **Brand name & language tone** (formal French vs. local flavor).
+3. ~~Which 1–2 business categories to start with?~~ **Decided:** restaurants /
+   maquis, and boutiques — including online sellers (TikTok, Instagram,
+   Facebook, WhatsApp status) with or without a physical shop.
+4. ~~Brand name~~ **Decided: CréeTonAgent.** Tone is chosen by each business
+   (professional / friendly / Ivorian casual).
