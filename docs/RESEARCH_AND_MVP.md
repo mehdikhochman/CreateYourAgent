@@ -137,7 +137,8 @@ After launch, the home screen shows:
 - **Notification** when a customer wants to order / book / speak to a human.
 
 ### In scope for MVP
-- Android first (dominant in CI), Expo React Native so iOS comes almost free
+- **iOS first** (pilot distributed via TestFlight), built with Expo React Native
+  so the Android version comes almost free later (Android is the majority in CI)
 - French UI, assistant answers in the customer's language (French, English;
   understands Nouchi/informal French reasonably well with modern LLMs)
 - One business = one assistant = one WhatsApp number
@@ -219,13 +220,27 @@ After launch, the home screen shows:
 
 | Week | Deliverable |
 |---|---|
-| 1 | Clickable Figma/Expo prototype of the 5 screens; test it with 3–5 real business owners in Abidjan |
+| 0 | Apple Developer account opened (start now — an organization account needs a D-U-N-S number, which can take 1–2 weeks); Expo + EAS project set up |
+| 1 | Clickable Expo prototype of the 5 screens on TestFlight; test it with 3–5 real business owners in Abidjan who use an iPhone |
 | 2–3 | Backend + business profile + test chat working in the app (no WhatsApp yet) |
 | 4 | Evolution API connection, real WhatsApp replies, inbox + takeover |
-| 5 | Menu-photo extraction, notifications, polish; onboard 5–10 pilot businesses |
+| 5 | Menu-photo extraction, push notifications (APNs via Expo), polish; onboard 5–10 pilot businesses via TestFlight |
 | 6–9 | Pilot: measure answer quality, fix, add voice-note transcription; prepare Meta Cloud API migration and pricing in FCFA |
 
 ---
+
+### iOS-specific notes
+- **No Mac required:** Expo EAS Build compiles the iOS app in the cloud and
+  uploads it to TestFlight.
+- **Apple Developer Program** (paid yearly) is mandatory, even for TestFlight.
+  Individual account = fast; organization account = app published under the
+  company name but needs a D-U-N-S number.
+- **TestFlight** is enough for the whole pilot (up to 10,000 testers, builds
+  valid 90 days) — no App Store review needed beyond a light beta review.
+- **App Store review later:** phone-number OTP login is fine; "Sign in with
+  Apple" is only required if we add Google/Facebook login. Provide a demo
+  account for reviewers.
+- **Pilot recruiting:** make sure the pilot businesses' owners use an iPhone.
 
 ## 6. Open questions to decide together
 
