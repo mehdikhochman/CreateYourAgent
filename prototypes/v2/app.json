@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "CréeTonAgent",
+    "slug": "creetonagent",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "creetonagent",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "ci.creetonagent.app",
+      "supportsTablet": false
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F77F00",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "ci.creetonagent.app"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png",
+      "name": "CréeTonAgent",
+      "shortName": "CréeTonAgent",
+      "description": "Votre assistant WhatsApp qui répond à vos clients 24h/24.",
+      "lang": "fr",
+      "themeColor": "#F77F00",
+      "backgroundColor": "#FFFFFF"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F77F00",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "CréeTonAgent utilise vos photos pour lire votre menu ou votre liste de prix.",
+          "cameraPermission": "CréeTonAgent utilise l'appareil photo pour photographier votre menu ou vos produits."
+        }
+      ],
+      "expo-asset",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
