@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { bodyLimit } from 'hono/body-limit';
 
 import { requireAuth } from '../auth/middleware';
 import type { AppDeps } from '../deps';
@@ -14,6 +15,9 @@ export type Routers = {
   public?: { path: string; router: Hono }[];
 };
 
+/** Largest request body accepted anywhere (the biggest real body, a webhook, is a few KB). */
+export const MAX_BODY_BYTES = 1024 * 1024;
+
 /**
  * Assembles the HTTP app. src/app.ts calls it with every module's routers;
  * module tests call it with just their own router.
@@ -22,6 +26,15 @@ export function buildApp(deps: Pick<AppDeps, 'config' | 'clock' | 'log' | 'db'>,
   const app = new Hono();
   app.onError(errorHandler(deps.log));
   app.notFound((c) => c.json({ error: { code: 'not_found', message: 'Not found' } }, 404));
+  // Without a limit, one huge request (even to a public route like /v1/auth/otp)
+  // is read fully into memory and can take the server down.
+  app.use(
+    '*',
+    bodyLimit({
+      maxSize: MAX_BODY_BYTES,
+      onError: (c) => c.json({ error: { code: 'payload_too_large', message: 'Request body too large' } }, 413),
+    }),
+  );
 
   app.get('/health', (c) => c.json({ ok: true }));
 

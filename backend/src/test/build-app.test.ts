@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { describe, expect, it } from 'vitest';
 
-import { buildApp } from '../http/build-app';
+import { buildApp, MAX_BODY_BYTES } from '../http/build-app';
 import type { AppEnv } from '../http/env';
 import { FakeClock, SilentLogger, testConfig } from './fakes';
 import { seedOwner } from './seed';
@@ -52,5 +52,21 @@ describe('requireAuth', () => {
     const res = await app.request('/v1/shop', { headers: owner.headers });
     expect(res.status).toBe(401);
     expect(await res.json()).toMatchObject({ error: { code: 'session_revoked' } });
+  });
+});
+
+describe('request size limit', () => {
+  it('refuses a body over 1 MB on any route, before reading it all', async () => {
+    const auth = new Hono();
+    auth.post('/otp', async (c) => c.json({ length: (await c.req.text()).length }));
+    const app = buildApp(
+      { config: testConfig(), clock: new FakeClock(), log: new SilentLogger(), get db() { return testDb.db; } },
+      { auth },
+    );
+    const ok = await app.request('/v1/auth/otp', { method: 'POST', body: 'x'.repeat(1000) });
+    expect(ok.status).toBe(200);
+    const big = await app.request('/v1/auth/otp', { method: 'POST', body: 'x'.repeat(MAX_BODY_BYTES + 1) });
+    expect(big.status).toBe(413);
+    expect(await big.json()).toMatchObject({ error: { code: 'payload_too_large' } });
   });
 });
