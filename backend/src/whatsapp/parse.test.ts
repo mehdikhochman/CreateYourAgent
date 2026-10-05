@@ -181,6 +181,13 @@ describe('parseMetaWebhook tolerance', () => {
     }
   });
 
+  it('drops NUL characters, which Postgres text cannot store', () => {
+    const events = parseMetaWebhook(
+      withMessages([{ from: '225', id: 'w', timestamp: '1', type: 'text', text: { body: 'a\u0000b' } }]),
+    );
+    expect(events).toMatchObject([{ kind: 'text', text: 'ab' }]);
+  });
+
   it('keeps messages with a missing or bad timestamp (timestamp null)', () => {
     const events = parseMetaWebhook(
       withMessages([

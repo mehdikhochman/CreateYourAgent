@@ -141,6 +141,17 @@ describe('POST /webhooks/meta', () => {
     expect(deps.log.lines.some((l) => l.level === 'error')).toBe(true);
   });
 
+  it('still processes a payload Postgres refuses to keep as jsonb (\\u0000)', async () => {
+    const raw = metaFixture('text').raw.replace('le sac est', 'le sac\\u0000 est');
+    expect(raw).toContain('\\u0000');
+    const res = await app().request('/webhooks/meta', post(raw));
+    expect(res.status).toBe(200);
+    const stored = (await testDb.db.query('SELECT text FROM messages')).rows;
+    expect(stored).toEqual([{ text: 'Bonsoir, le sac est à combien ?' }]);
+    expect(await webhookEvents()).toEqual([]);
+    expect(deps.log.lines.some((l) => l.level === 'error' && l.msg.includes('could not store'))).toBe(true);
+  });
+
   it('rejects oversized bodies', async () => {
     const raw = JSON.stringify({ object: 'whatsapp_business_account', pad: 'x'.repeat(1024 * 1024) });
     const res = await app().request('/webhooks/meta', post(raw));

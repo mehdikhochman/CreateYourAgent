@@ -44,12 +44,7 @@ export function metaWebhookRoutes(deps: AppDeps): Hono {
       throw new ApiError(400, 'invalid_json', 'Body must be JSON');
     }
 
-    // Raw payloads are kept to replay or debug real traffic.
-    const stored = await deps.db.query<{ id: number }>(
-      `INSERT INTO webhook_events (source, payload, received_at) VALUES ('meta', $1::jsonb, $2) RETURNING id`,
-      [raw, deps.clock.now()],
-    );
-    const eventId = stored.rows[0]!.id;
+    const eventId = await storePayload(deps, raw);
 
     try {
       const events = parseMetaWebhook(body);
@@ -58,16 +53,38 @@ export function metaWebhookRoutes(deps: AppDeps): Hono {
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       deps.log.error('meta webhook: ingest failed', { webhookEventId: eventId, error: message });
-      await deps.db
-        .query('UPDATE webhook_events SET error = $2 WHERE id = $1', [eventId, message])
-        .catch(() => {});
+      if (eventId !== null) {
+        await deps.db
+          .query('UPDATE webhook_events SET error = $2 WHERE id = $1', [eventId, message])
+          .catch(() => {});
+      }
       // Meta retries on non-2xx; ingest is idempotent thanks to the unique wamid.
       throw new ApiError(500, 'ingest_failed', 'Could not process the event');
     }
 
-    await deps.db.query('UPDATE webhook_events SET processed_at = $2 WHERE id = $1', [eventId, deps.clock.now()]);
+    if (eventId !== null) {
+      await deps.db.query('UPDATE webhook_events SET processed_at = $2 WHERE id = $1', [eventId, deps.clock.now()]);
+    }
     return c.text('EVENT_RECEIVED', 200);
   });
 
   return app;
+}
+
+/**
+ * Keeps the raw payload to replay or debug real traffic. Best effort: a body
+ * Postgres refuses as jsonb (e.g. a \u0000 escape) must not block the messages in it.
+ */
+async function storePayload(deps: AppDeps, raw: string): Promise<number | null> {
+  try {
+    const stored = await deps.db.query<{ id: number }>(
+      `INSERT INTO webhook_events (source, payload, received_at) VALUES ('meta', $1::jsonb, $2) RETURNING id`,
+      [raw, deps.clock.now()],
+    );
+    return stored.rows[0]!.id;
+  } catch (err) {
+    const error = err instanceof Error ? err.message : String(err);
+    deps.log.error('meta webhook: could not store the payload', { error });
+    return null;
+  }
 }

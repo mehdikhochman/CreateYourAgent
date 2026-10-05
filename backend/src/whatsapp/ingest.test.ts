@@ -235,12 +235,29 @@ describe('ingestEvents: statuses', () => {
     expect(await outboundStatus()).toEqual({ status: 'read', error: null });
   });
 
-  it('marks a sent message failed with the error', async () => {
+  it('marks a sent message failed with the error the owner reads, and logs Meta\'s', async () => {
     await seedOutbound('sent');
     expect(await ingest('status-failed')).toEqual({ inserted: 0 });
-    const row = await outboundStatus();
-    expect(row.status).toBe('failed');
-    expect(row.error).toMatch(/^131047 Re-engagement message: Message failed to send because more than 24 hours/);
+    expect(await outboundStatus()).toEqual({ status: 'failed', error: 'Plus de 24 h : le client doit réécrire' });
+    const warn = deps.log.lines.find((l) => l.msg === 'whatsapp: message delivery failed');
+    expect(warn?.data).toMatchObject({
+      wamid: FIXTURE_OUTBOUND_WAMID,
+      metaCode: 131047,
+      error: expect.stringMatching(/^131047 Re-engagement message: Message failed to send because more than 24 hours/),
+    });
+  });
+
+  it('keeps Meta\'s text for errors without a known explanation', async () => {
+    await seedOutbound('sent');
+    const failed = (error?: { code: number | null; title: string; details: string }) =>
+      events('status-failed').map((e) => ({ ...e, error }) as InboundEvent);
+
+    await ingestEvents(deps, failed({ code: 131026, title: 'Message undeliverable', details: '' }));
+    expect(await outboundStatus()).toEqual({ status: 'failed', error: '131026 Message undeliverable' });
+
+    await testDb.db.query(`UPDATE messages SET status = 'sent', error = NULL WHERE wamid = $1`, [FIXTURE_OUTBOUND_WAMID]);
+    await ingestEvents(deps, failed(undefined));
+    expect(await outboundStatus()).toEqual({ status: 'failed', error: 'Message non livré' });
   });
 
   it('does not fail a delivered message', async () => {

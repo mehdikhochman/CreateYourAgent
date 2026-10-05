@@ -61,8 +61,9 @@ function arr(v: unknown): unknown[] {
   return Array.isArray(v) ? v : [];
 }
 
+/** Postgres text can't hold NUL characters: drop them so one odd message can't block a webhook. */
 function str(v: unknown): string {
-  if (typeof v === 'string') return v;
+  if (typeof v === 'string') return v.includes('\u0000') ? v.replaceAll('\u0000', '') : v;
   if (typeof v === 'number' && Number.isFinite(v)) return String(v);
   return '';
 }

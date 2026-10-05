@@ -388,6 +388,28 @@ describe('reply job', () => {
     expect(deps.whatsapp.sent).toHaveLength(1);
   });
 
+  it('drops a queued reply when the owner answered before the retry', async () => {
+    const { deps, owner, conv, customer, run } = await setup();
+    await customer('Bonjour', -5000);
+    deps.whatsapp.failWith = new Error('Meta is down');
+    await expect(run(1)).rejects.toThrow();
+    deps.whatsapp.failWith = null;
+    await addMessage(testDb.db, {
+      shopId: owner.shopId,
+      conversationId: conv.conversationId,
+      role: 'owner',
+      text: 'Bonjour, je suis là',
+      createdAt: at(2000),
+    });
+
+    deps.clock.advance(5000);
+    await run(2);
+    expect(deps.whatsapp.sent).toEqual([]);
+    expect(deps.assistant.calls).toHaveLength(1);
+    const [reply] = await assistantMessages(conv.conversationId);
+    expect(reply).toMatchObject({ status: 'failed', error: expect.stringContaining('remplacé') });
+  });
+
   it('drops a queued reply when the owner takes over before the retry', async () => {
     const { deps, conv, customer, run } = await setup();
     await customer('Bonjour', -5000);
@@ -417,6 +439,23 @@ describe('reply job', () => {
     expect(deps.whatsapp.sent.map((s) => s.text)).toEqual([FALLBACK_TEXT]);
     const [reply] = await assistantMessages(conv.conversationId);
     expect(reply.engine).toMatchObject({ action: 'fallback', error: 'Claude timeout', confident: false });
+    expect(await openAlerts(conv.conversationId)).toHaveLength(1);
+  });
+
+  it('tries once more before sending the engine\'s own fallback (model outage)', async () => {
+    const fallback: EngineResult = {
+      reply: { text: FALLBACK_TEXT, confident: false, alert: { kind: 'question', summary: '« Bonjour »' } },
+      meta: { action: 'fallback', source: 'fallback', error: 'Claude 529 overloaded' },
+    };
+    const assistant = new FakeAssistant(() => fallback);
+    const { deps, conv, customer, run } = await setup({ assistant });
+    await customer('Bonjour', -5000);
+    await expect(run(1, 5)).rejects.toThrow('assistant fell back');
+    expect(deps.whatsapp.sent).toEqual([]);
+
+    await run(2, 5);
+    expect(deps.whatsapp.sent.map((s) => s.text)).toEqual([FALLBACK_TEXT]);
+    expect(assistant.calls).toHaveLength(2);
     expect(await openAlerts(conv.conversationId)).toHaveLength(1);
   });
 

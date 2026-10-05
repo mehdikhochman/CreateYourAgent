@@ -265,12 +265,24 @@ export function conversationRoutes(deps: AppDeps): Hono<AppEnv> {
   /** Push token of this device (this session). null turns pushes off. */
   app.put('/devices/current', async (c) => {
     const body = await parseBody(c, DeviceBody);
-    const res = await deps.db.query(
-      `UPDATE sessions SET push_token = $3, platform = COALESCE($4, platform), last_seen_at = $5
-        WHERE id = $1 AND owner_id = $2 AND revoked_at IS NULL`,
-      [c.var.sessionId, c.var.ownerId, body.pushToken, body.platform ?? null, deps.clock.now()],
-    );
-    if (res.rowCount === 0) throw new ApiError(401, 'unauthorized', 'Session expired');
+    const sessionId = c.var.sessionId;
+    await withTransaction(deps.db, async (tx) => {
+      const res = await tx.query(
+        `UPDATE sessions SET push_token = $3, platform = COALESCE($4, platform), last_seen_at = $5
+          WHERE id = $1 AND owner_id = $2 AND revoked_at IS NULL`,
+        [sessionId, c.var.ownerId, body.pushToken, body.platform ?? null, deps.clock.now()],
+      );
+      if (res.rowCount === 0) throw new ApiError(401, 'unauthorized', 'Session expired');
+      // A phone gets the pushes of the account logged in on it now. An older
+      // session with the same token (app reinstalled, or another shop's owner
+      // before, without logging out) must not send its customers' messages here.
+      if (body.pushToken !== null) {
+        await tx.query('UPDATE sessions SET push_token = NULL WHERE push_token = $1 AND id <> $2', [
+          body.pushToken,
+          sessionId,
+        ]);
+      }
+    });
     return c.body(null, 204);
   });
 

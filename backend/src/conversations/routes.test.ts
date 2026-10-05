@@ -419,6 +419,19 @@ describe('PUT /v1/devices/current', () => {
     expect(await session(owner.sessionId)).toEqual({ push_token: null, platform: 'android' });
   });
 
+  it('takes the token away from older sessions on the same phone, whoever they belong to', async () => {
+    const { app } = makeApp();
+    const before = await seedShop(testDb.db, { pushToken: 'ExponentPushToken[shared-phone]' });
+    const elsewhere = await seedShop(testDb.db, { pushToken: 'ExponentPushToken[other-phone]' });
+    const now = await seedShop(testDb.db, { pushToken: null });
+
+    const res = await call(app, now, 'PUT', '/devices/current', { pushToken: 'ExponentPushToken[shared-phone]' });
+    expect(res.status).toBe(204);
+    expect(await session(now.sessionId)).toMatchObject({ push_token: 'ExponentPushToken[shared-phone]' });
+    expect(await session(before.sessionId)).toMatchObject({ push_token: null });
+    expect(await session(elsewhere.sessionId)).toMatchObject({ push_token: 'ExponentPushToken[other-phone]' });
+  });
+
   it('validates the body and refuses a revoked session', async () => {
     const { app } = makeApp();
     const owner = await seedShop(testDb.db);

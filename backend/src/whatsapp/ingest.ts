@@ -3,6 +3,7 @@
  * "Taking over"). Idempotent: a message's `wamid` is unique, so a webhook Meta
  * sends again inserts nothing and enqueues nothing.
  */
+import { describeSendError } from '../conversations/send-error';
 import { type DbClient, withTransaction } from '../db/pool';
 import type { AppDeps } from '../deps';
 import type { DeliveryStatus, InboundEcho, InboundEvent, InboundMessage, InboundStatus } from './parse';
@@ -54,7 +55,7 @@ async function ingestOne(deps: AppDeps, client: DbClient, event: InboundEvent): 
     case 'echo':
       return ingestEcho(deps, client, shopId, event);
     case 'status':
-      await applyStatus(client, shopId, event);
+      await applyStatus(deps, client, shopId, event);
       return { inserted: false };
   }
 }
@@ -110,8 +111,15 @@ async function ingestEcho(deps: AppDeps, client: DbClient, shopId: string, e: In
   return { inserted: true };
 }
 
-async function applyStatus(client: DbClient, shopId: string, s: InboundStatus): Promise<void> {
-  const error = s.status === 'failed' && s.error ? formatError(s.error) : null;
+async function applyStatus(deps: AppDeps, client: DbClient, shopId: string, s: InboundStatus): Promise<void> {
+  let error: string | null = null;
+  if (s.status === 'failed') {
+    const metaCode = s.error?.code ?? null;
+    const metaText = s.error ? formatError(s.error) : 'Message non livré';
+    // messages.error is shown to the owner: same text as when sending fails right away.
+    error = describeSendError(Object.assign(new Error(metaText), { metaCode })).message;
+    deps.log.warn('whatsapp: message delivery failed', { wamid: s.wamid, metaCode, error: metaText });
+  }
   await client.query(
     `UPDATE messages SET status = $3, error = COALESCE($4, error)
       WHERE wamid = $1 AND shop_id = $2 AND status = ANY($5::text[])`,
@@ -119,9 +127,10 @@ async function applyStatus(client: DbClient, shopId: string, s: InboundStatus): 
   );
 }
 
+/** Meta's error as one line, e.g. "131047 Re-engagement message: Message failed to send because…". */
 function formatError(e: NonNullable<InboundStatus['error']>): string {
   const head = [e.code, e.title].filter((p) => p !== null && p !== '').join(' ');
-  return [head, e.details].filter((p) => p !== '').join(': ') || 'unknown error';
+  return [head, e.details].filter((p) => p !== '').join(': ') || 'Message non livré';
 }
 
 /** Finds or creates the customer and their conversation; returns the conversation id. */

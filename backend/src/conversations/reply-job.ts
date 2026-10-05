@@ -85,6 +85,8 @@ async function answerConversation(deps: AppDeps, conversationId: string, ctx: Jo
 
   const pending = await loadPending(deps, conversationId);
   const last = pending.at(-1);
+  // Before the early return, so an unsent reply is dropped even when nothing is left to answer (the owner answered).
+  await dropStaleReplies(deps, conversationId, last?.id ?? null);
   if (!last) return; // already answered
 
   const now = deps.clock.now();
@@ -94,7 +96,7 @@ async function answerConversation(deps: AppDeps, conversationId: string, ctx: Jo
   }
 
   const reply =
-    (await takeQueuedReply(deps, conversationId, pending, last)) ??
+    (await takeQueuedReply(deps, conversationId, last)) ??
     (await composeReply(deps, conv, conv.phone_number_id, pending, last, ctx));
   if (!reply) return;
 
@@ -180,33 +182,33 @@ async function notifyPaused(
 }
 
 /**
- * A previous attempt stored a reply to this burst but couldn't send it: send
- * that one again. A queued reply to only part of the burst (the customer wrote
- * again since) is dropped, and the whole burst is answered afresh.
+ * A reply an earlier attempt stored but couldn't send is dropped unless it
+ * answers `keepReplyTo` (the latest pending message): the customer wrote again
+ * (the whole burst is answered afresh) or the owner answered since.
  */
+async function dropStaleReplies(deps: AppDeps, conversationId: string, keepReplyTo: string | null): Promise<void> {
+  await deps.db.query(
+    `UPDATE messages SET status = 'failed', error = 'Non envoyé : remplacé par une réponse plus récente'
+      WHERE conversation_id = $1 AND role = 'assistant' AND status = 'queued'
+        AND engine->>'replyTo' IS NOT NULL AND engine->>'replyTo' IS DISTINCT FROM $2::text`,
+    [conversationId, keepReplyTo],
+  );
+}
+
+/** A previous attempt stored a reply to this burst but couldn't send it: send that one again. */
 async function takeQueuedReply(
   deps: AppDeps,
   conversationId: string,
-  pending: PendingMessage[],
   last: PendingMessage,
 ): Promise<StoredReply | null> {
   const res = await deps.db.query<StoredReply>(
     `SELECT id, text, engine FROM messages
-      WHERE conversation_id = $1 AND role = 'assistant' AND status = 'queued'
-        AND engine->>'replyTo' = ANY($2::text[])
-      ORDER BY created_at DESC, id DESC`,
-    [conversationId, pending.map((m) => m.id)],
+      WHERE conversation_id = $1 AND role = 'assistant' AND status = 'queued' AND engine->>'replyTo' = $2
+      ORDER BY created_at DESC, id DESC
+      LIMIT 1`,
+    [conversationId, last.id],
   );
-  const current = res.rows.find((r) => r.engine.replyTo === last.id) ?? null;
-  const stale = res.rows.filter((r) => r !== current).map((r) => r.id);
-  if (stale.length > 0) {
-    await deps.db.query(
-      `UPDATE messages SET status = 'failed', error = 'Non envoyé : remplacé par une réponse plus récente'
-        WHERE id = ANY($1::uuid[]) AND status = 'queued'`,
-      [stale],
-    );
-  }
-  return current;
+  return res.rows[0] ?? null;
 }
 
 /** Asks the assistant (or builds the holding reply for media) and stores the reply as 'queued'. */
@@ -240,6 +242,12 @@ async function composeReply(
     const history = await loadHistory(deps, conv.id, pending);
     try {
       const result = await deps.assistant.respond({ profile, history, message: texts.join('\n') });
+      // The engine already fell back to « Je transmets au responsable » because
+      // the model failed (timeout, outage). Try once more a few seconds later
+      // before handing a simple question over to the owner.
+      if (result.meta.source === 'fallback' && ctx.attempt === 1 && ctx.maxAttempts > 1) {
+        throw new Error(`assistant fell back: ${result.meta.error ?? 'unknown error'}`);
+      }
       reply = result.reply;
       meta = result.meta;
     } catch (err) {

@@ -61,8 +61,10 @@ the outside world for fakes (`test/fakes.ts`), so they never call Meta or Claude
 
 ## Quick start
 
-You need **Node.js 22.9 or newer** (`node -v`; the current LTS is fine), **Docker Desktop** (it runs Postgres
-for you) and a terminal. Commands are for macOS / Linux, or Git Bash on Windows.
+You need **Node.js 22.9 or newer** (`node -v`; the current LTS is fine; the npm
+scripts use Node's built-in `.env` loading, which 22.9 added), **Docker Desktop**
+(it runs Postgres for you) and a terminal. Commands are for macOS / Linux, or Git
+Bash on Windows.
 
 **1. Start Postgres.** From the `backend/` folder:
 
@@ -97,7 +99,8 @@ Open `.env` and fill in:
   [docs/guides/WHATSAPP_TEST_NUMBER.md](../docs/guides/WHATSAPP_TEST_NUMBER.md).
 
 All variables are listed in [Environment variables](#environment-variables).
-Every npm script reads `backend/.env`; a variable already set in your shell wins.
+The API, the worker, `migrate`, `seed` and `eval` read `backend/.env`; a variable
+already set in your shell wins. Tests don't read it (see [Tests](#tests)).
 
 **3. Install the packages and create the tables:**
 
@@ -129,9 +132,11 @@ npm run dev          # terminal 1: the API on http://localhost:3000
 npm run dev:worker   # terminal 2: the worker (assistant replies, sending, notifications)
 ```
 
-Logs are one JSON object per line, and stay quiet when all goes well. At start-up
-the API and the worker say which assistant they use: `assistant: Claude` or
-`assistant: offline keyword rules`.
+Logs are one JSON object per line. At start-up the API and the worker say which
+assistant they use: `assistant: Claude` or `assistant: offline keyword rules`.
+Then, for each WhatsApp message, the API prints `meta webhook: received` and the
+worker prints `reply: sent`. Anything else is a warning or an error that says
+what went wrong.
 
 **6. Check it's alive:** `curl http://localhost:3000/health` prints `{"ok":true}`.
 
@@ -175,9 +180,16 @@ npm run typecheck        # TypeScript errors only
 ```
 
 Tests need Postgres. They use the database in `TEST_DATABASE_URL`, default
-`postgres://cta:cta@localhost:5432/cta_test` (works with `docker compose`). **That
-database is dropped and recreated on every run**, so never point it at a database
-you care about. Each test starts from empty tables.
+`postgres://cta:cta@localhost:5432/cta_test` (works with `docker compose`, nothing to
+set). **That database is dropped and recreated on every run**, so never point it at
+a database you care about. Each test starts from empty tables. Tests never call
+Meta, Claude or Expo: fakes stand in for them.
+
+Tests don't read `.env`. To use another Postgres, set the variable in the shell:
+
+```bash
+TEST_DATABASE_URL=postgres://me:secret@localhost:5433/cta_test npm test
+```
 
 ## Environment variables
 
@@ -222,8 +234,8 @@ retry a request after a dropped connection. A row of another shop answers `404`.
 | `GET` · `PUT` · `DELETE /v1/channels/whatsapp` | Status of the WhatsApp link; link a number by its Meta `{phoneNumberId, displayPhone}` (stage 1, instead of Embedded Signup); unlink it. |
 | `GET /v1/sync?cursor=<rev>` | Everything that changed since `cursor`: `{profile, catalog, answers, conversations, messages, alerts, cursor, hasMore}`. Called on app start, on resume and on each push. |
 | **Conversations** | |
-| `GET /v1/conversations?filter=attention\|all&cursor=` | The inbox (« À traiter » / « Toutes »). |
-| `GET /v1/conversations/:id/messages?before=` | Older messages, page by page. |
+| `GET /v1/conversations?filter=attention\|all&before=` | The inbox (« À traiter » / « Toutes »), newest first: `{conversations, alerts, nextBefore}`. Pass `nextBefore` back as `before` for the next page. |
+| `GET /v1/conversations/:id/messages?before=` | Older messages, page by page: `{messages, nextBefore}`. |
 | `POST /v1/conversations/:id/messages` | `{clientId, text}`: the owner replies as the shop and the assistant stays paused. `409` when the customer's last message is more than 24 h old (WhatsApp's rule). |
 | `POST /v1/conversations/:id/takeover` · `/release` · `/read` | « Je prends la main » (pause the assistant for this customer), « Rendre la main », mark as read. |
 | `POST /v1/alerts/:id/done` | Remove an alert from « À traiter ». |
@@ -246,15 +258,17 @@ The assistant never writes prices itself. For every customer message:
      is set. It reads the shop profile, the learned answers and the last messages.
    - **Offline keyword rules** when there is no key: free and instant, but they
      understand less (fixed word lists, like the prototype).
-3. **The reply is built from the shop's data**, in the shop's tone. A check
-   refuses a reply containing a number that isn't in the profile.
+3. **The reply is built from the shop's data**, in the shop's tone. Before that,
+   a guard checks the choice: products and zones that don't exist are dropped,
+   and Claude's optional short opening line is removed if it contains a digit
+   (a price or a delay could hide there) or a promise (« remise », « en stock »…).
 4. **When in doubt, hand over:** the customer is told the owner will answer, and
    the owner gets an alert. Same if Claude is down or too slow.
 
 `npm run eval` runs the eval set (« this message, this shop → this action ») on the
 current decider and prints the score. Run it before and after changing the prompt
-or the keyword rules. With `ANTHROPIC_API_KEY` set it calls Claude (a few francs
-per run).
+or the keyword rules. It needs no database. With `ANTHROPIC_API_KEY` set it calls
+Claude (a few francs per run); without it, it scores the keyword rules.
 
 When the owner taps « Mauvaise réponse », the correction becomes a learned answer
 (`POST /v1/messages/:id/correction`) and applies from the next message.
