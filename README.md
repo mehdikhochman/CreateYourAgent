@@ -15,6 +15,7 @@ L’assistant s’appelle **Tiko** côté commerçant ; les clients voient le no
 | [`design/`](design) | Maquettes validées : images des écrans, fichiers de la page de design, Tiko en SVG, logos. |
 | [`docs/business/`](docs/business) | Fonctionnement de l’app et business model. |
 | [`docs/research/`](docs/research) | Recherche de projets similaires sur GitHub et définition du MVP. |
+| [`docs/PROMPTS.md`](docs/PROMPTS.md) | Prompts prêts à coller pour les skills Claude (design, engineering, expo). |
 
 ## Liens
 
@@ -44,4 +45,5 @@ ouverte sur ce dépôt :
 - **expo** (par l’équipe Expo) : Expo Router, animations, publication web (`eas-hosting`),
   mises à jour, App Store et Play Store
 
-Tapez `/` dans Claude pour voir la liste.
+Tapez `/` dans Claude pour voir la liste. Des prompts prêts à coller pour ce
+projet sont dans [`docs/PROMPTS.md`](docs/PROMPTS.md).
