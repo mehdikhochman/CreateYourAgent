@@ -43,9 +43,9 @@ export default function Home() {
         <BrandMark brand="whatsapp" size={34} />
         <View style={styles.flex}>
           <Text weight="bold" style={styles.statusTitle}>
-            Assistant actif sur WhatsApp
+            Tiko est en ligne sur WhatsApp
           </Text>
-          <Text style={styles.statusText}>Il répond à vos clients en ce moment</Text>
+          <Text style={styles.statusText}>Il répond à vos clients, jour et nuit.</Text>
         </View>
         <View style={styles.liveDot} accessibilityLabel="Actif" />
       </View>

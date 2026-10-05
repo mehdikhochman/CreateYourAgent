@@ -13,7 +13,7 @@ import { TikoAvatar } from '@/components/tiko/tiko';
 import { Button } from '@/components/ui';
 import { Colors, Spacing } from '@/constants/theme';
 import { newId, nowTime } from '@/lib/ids';
-import { actionLabel, replyTo, suggestedQuestions, type AssistantReply } from '@/lib/mock-assistant';
+import { actionPromise, replyTo, suggestedQuestions, type AssistantReply } from '@/lib/mock-assistant';
 import { useAppState } from '@/state/app-state';
 
 type ChatMessage =
@@ -81,10 +81,10 @@ export default function TestChat() {
 
   const saveCorrection = (draft: CorrectionDraft) => {
     updateProfile({ faqs: [...profile.faqs, { id: newId('faq'), ...draft, source: 'correction' }] });
-    const what = draft.action === 'custom' ? `je répondrai : « ${draft.answer} »` : `je ferai : ${actionLabel(draft.action).toLowerCase()}.`;
-    setMessages((m) => [...m, { id: newId('m'), role: 'system', text: `Compris ! Quand on m’écrira « ${draft.question} », ${what}` }]);
+    const text = `Compris ! Quand un client écrira « ${draft.question} », ${actionPromise(profile, draft)}`;
+    setMessages((m) => [...m, { id: newId('m'), role: 'system', text }]);
     setCorrecting(null);
-    toast('Réponse apprise par Tiko');
+    toast('Tiko a appris cette réponse');
   };
 
   return (
@@ -171,8 +171,8 @@ export default function TestChat() {
                       icon={<Bell size={16} color={Colors.link} strokeWidth={2.4} />}
                       text={
                         item.alert.kind === 'order'
-                          ? 'Commande : vous recevrez une notification'
-                          : 'Question transmise : vous recevrez une notification'
+                          ? 'Tiko vous préviendra : nouvelle commande'
+                          : 'Tiko vous préviendra : question à traiter'
                       }
                     />
                   ) : null}
@@ -185,7 +185,7 @@ export default function TestChat() {
             value={input}
             onChange={setInput}
             onSend={() => send(input)}
-            onMic={() => toast('Messages vocaux : bientôt disponibles', 'info')}
+            onMic={() => toast('Les messages vocaux arrivent bientôt. Pour l’instant, écrivez.', 'info')}
             placeholder="Écrivez comme un client…"
           />
           {onboarding ? (

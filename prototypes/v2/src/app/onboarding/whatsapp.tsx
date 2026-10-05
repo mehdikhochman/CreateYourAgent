@@ -12,7 +12,7 @@ import { Colors, Radius, Spacing } from '@/constants/theme';
 import { useAppState } from '@/state/app-state';
 
 const STEPS = [
-  'Ouvrez WhatsApp Business sur le téléphone du commerce',
+  'Ouvrez WhatsApp (ou WhatsApp Business) sur le téléphone de votre commerce',
   'Touchez ⋮ ou Réglages, puis « Appareils connectés »',
   'Touchez « Connecter un appareil » et scannez ce code',
 ];
@@ -21,7 +21,7 @@ const STEPS = [
 // shows the QR code returned by our WhatsApp gateway (Evolution API), then
 // later uses Meta's official signup flow.
 export default function ConnectWhatsApp() {
-  const { profile, goLive } = useAppState();
+  const { goLive } = useAppState();
   const toast = useToast();
   const [connecting, setConnecting] = useState(false);
 
@@ -31,7 +31,7 @@ export default function ConnectWhatsApp() {
       goLive();
       router.dismissAll();
       router.replace('/home');
-      toast('Tiko répond maintenant sur WhatsApp');
+      toast('C’est parti ! Tiko répond maintenant à vos clients.');
     }, 1500);
   };
 
@@ -51,7 +51,7 @@ export default function ConnectWhatsApp() {
         </>
       }>
       <Title>Dernière étape : connectez WhatsApp</Title>
-      <Subtitle>Tiko répondra aux clients de {profile.name || 'votre commerce'} sur ce numéro.</Subtitle>
+      <Subtitle>Tiko répondra à vos clients sur votre WhatsApp.</Subtitle>
 
       <View style={styles.qrCard}>
         <View style={styles.qr}>
@@ -82,7 +82,7 @@ export default function ConnectWhatsApp() {
 
       <View style={styles.tip}>
         <Info size={18} color={Colors.link} strokeWidth={2.4} />
-        <Text style={styles.tipText}>Pendant le test, utilisez de préférence un second numéro WhatsApp.</Text>
+        <Text style={styles.tipText}>Pour ce test, utilisez plutôt un autre numéro que celui de vos clients.</Text>
       </View>
     </Screen>
   );

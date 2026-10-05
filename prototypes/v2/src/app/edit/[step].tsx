@@ -28,7 +28,7 @@ export default function EditStep() {
 
   const save = () => {
     updateProfile(draft);
-    toast(`${label} : modification enregistrée`);
+    toast('C’est enregistré. Tiko utilise déjà ce changement.');
     router.back();
   };
 

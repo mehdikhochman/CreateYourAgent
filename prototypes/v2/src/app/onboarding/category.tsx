@@ -30,7 +30,7 @@ export default function CategoryScreen() {
       header={<TopBar progress={{ value: 1 / total, label: `1/${total}` }} />}
       footer={<Button label="Continuer" onPress={next} disabled={!selected} />}>
       <Title>Quelle est votre activité ?</Title>
-      <Subtitle>Votre assistant sera préparé pour votre métier.</Subtitle>
+      <Subtitle>Tiko s’adapte à votre métier.</Subtitle>
 
       <View style={styles.list}>
         {CATEGORIES.map((c) => {

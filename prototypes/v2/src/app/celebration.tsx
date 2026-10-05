@@ -108,7 +108,7 @@ export default function Celebration() {
           Tiko est prêt !
         </Text>
         <Text style={styles.subtitle}>
-          Tiko connaît déjà {profile.name || 'votre commerce'}. Testez-le comme le ferait un client.
+          Tiko connaît déjà {profile.name || 'votre commerce'}. Écrivez-lui comme un client pour voir ses réponses.
         </Text>
         <Button label="Tester Tiko maintenant" onPress={next} style={styles.button} />
       </Animated.View>

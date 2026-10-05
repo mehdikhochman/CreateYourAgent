@@ -67,7 +67,7 @@ export const PAYMENT_OPTIONS: Option[] = [
   { value: 'Orange Money', label: 'Orange Money' },
   { value: 'MTN MoMo', label: 'MTN Mobile Money' },
   { value: 'Moov Money', label: 'Moov Money' },
-  { value: 'Espèces', label: 'Espèces à la livraison' },
+  { value: 'Espèces', label: 'Espèces (cash)' },
   { value: 'Carte bancaire', label: 'Carte bancaire' },
 ];
 
@@ -112,7 +112,7 @@ const deliveryZonesStep = (showIf?: Step['showIf']): Step => ({
   field: 'deliveryZones',
   multiple: true,
   title: 'Où livrez-vous ?',
-  subtitle: 'Touchez toutes les zones que vous couvrez.',
+  subtitle: 'Touchez tous les endroits où vous livrez.',
   options: ABIDJAN_ZONES,
   showIf,
 });
@@ -132,7 +132,7 @@ const paymentsStep: Step = {
   field: 'payments',
   multiple: true,
   title: 'Comment vos clients paient-ils ?',
-  subtitle: 'L’assistant l’expliquera à chaque commande.',
+  subtitle: 'Touchez tous les moyens acceptés. Tiko les donnera à vos clients.',
   options: PAYMENT_OPTIONS,
 };
 
@@ -151,7 +151,7 @@ export const CATEGORIES: Category[] = [
     id: 'restaurant',
     icon: UtensilsCrossed,
     label: 'Restaurant / Maquis',
-    description: 'Menu, horaires, livraison, réservations',
+    description: 'Menu, horaires, livraison',
     catalogLabel: 'Votre menu',
     steps: [
       {
@@ -165,7 +165,7 @@ export const CATEGORIES: Category[] = [
         id: 'location',
         kind: 'text',
         field: 'location',
-        title: 'Où êtes-vous situé ?',
+        title: 'Où se trouve votre restaurant ?',
         subtitle: 'Donnez un repère que vos clients connaissent.',
         placeholder: 'Ex : Yopougon Selmer, derrière la pharmacie',
       },
@@ -181,7 +181,8 @@ export const CATEGORIES: Category[] = [
         kind: 'choice',
         field: 'serviceModes',
         multiple: true,
-        title: 'Quels services proposez-vous ?',
+        title: 'Comment servez-vous vos clients ?',
+        subtitle: 'Touchez tout ce que vous faites.',
         options: [
           { value: 'sur_place', label: 'Sur place', icon: Armchair },
           { value: 'emporter', label: 'À emporter', icon: Package },
@@ -229,7 +230,7 @@ export const CATEGORIES: Category[] = [
         field: 'salesChannels',
         multiple: true,
         title: 'Où vendez-vous ?',
-        subtitle: 'Touchez tout ce qui s’applique. Votre assistant enverra vos clients vers vos vidéos et vos posts.',
+        subtitle: 'Touchez tout ce que vous utilisez. Tiko enverra vos clients vers vos vidéos et vos posts.',
         options: SALES_CHANNELS,
       },
       {
@@ -246,14 +247,14 @@ export const CATEGORIES: Category[] = [
         kind: 'text',
         field: 'hours',
         title: 'Quels sont vos horaires ?',
-        subtitle: 'Ouverture de la boutique, ou heures où vous répondez et livrez.',
+        subtitle: 'Les heures d’ouverture. Si vous vendez en ligne : les heures où vous livrez.',
         placeholder: 'Ex : Lun – Sam, 9h – 19h',
       },
       {
         id: 'catalog',
         kind: 'catalog',
         title: 'Vos produits et vos prix',
-        subtitle: 'Photo de votre liste de prix, ou ajoutez-les un par un.',
+        subtitle: 'Prenez votre liste de prix en photo, ou ajoutez vos produits un par un.',
       },
       deliveryZonesStep((p) => sellsOnline(p) || !hasShop(p)),
       deliveryFeeStep((p) => sellsOnline(p) || !hasShop(p)),

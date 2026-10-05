@@ -7,7 +7,7 @@
  * `AssistantReply` shape so screens don't need to change.
  */
 import { ABIDJAN_ZONES, getCategory, hasShop, sellsOnline } from '@/data/categories';
-import type { AssistantAction, BusinessProfile, CatalogItem, Faq } from '@/state/types';
+import type { AssistantAction, BusinessProfile, CatalogItem, CategoryId, Faq } from '@/state/types';
 
 export type AssistantReply = {
   /** May contain **bold** parts (prices). */
@@ -63,11 +63,44 @@ function fcfa(price: string): string {
   return `${price}\u00A0F`.replace(/ /g, '\u00A0');
 }
 
+/** Bold price, or « prix sur demande » for a product added without one. */
+function priceText(price: string): string {
+  return price ? `**${fcfa(price)}**` : 'prix sur demande';
+}
+
 function listItems(items: CatalogItem[], max = 8): string {
   return items
     .slice(0, max)
-    .map((i) => `• ${i.name} : **${fcfa(i.price)}**`)
+    .map((i) => `• ${i.name} : ${priceText(i.price)}`)
     .join('\n');
+}
+
+/** ["a", "b", "c"] → "a, b et c" (or "ou"). */
+function joinWords(words: string[], last: 'et' | 'ou'): string {
+  return words.length < 2 ? (words[0] ?? '') : `${words.slice(0, -1).join(', ')} ${last} ${words[words.length - 1]}`;
+}
+
+/** "à Cocody", "partout à Abidjan", "à l’intérieur du pays". */
+function place(zone: string): string {
+  if (zone === 'Tout Abidjan') return 'partout à Abidjan';
+  if (zone === 'Intérieur du pays') return 'à l’intérieur du pays';
+  return `à ${zone}`;
+}
+
+/** Where the shop delivers, as a sentence end: "à Cocody et à Yopougon". */
+function deliveryPlaces(zones: string[]): string {
+  const everywhere = zones.includes('Tout Abidjan');
+  // "Tout Abidjan" already covers each commune.
+  const kept = zones.filter((z) => !everywhere || z === 'Tout Abidjan' || z === 'Intérieur du pays');
+  return joinWords(kept.map(place), 'et');
+}
+
+// Cash and card read as "en espèces" / "par carte bancaire"; the mobile money brands share one "par".
+const PAYMENT_WORDS: Record<string, string> = { 'Espèces': 'en espèces', 'Carte bancaire': 'par carte bancaire' };
+
+function paymentMethods(payments: string[]): string {
+  const brands = payments.filter((v) => !PAYMENT_WORDS[v]).map((v, i) => (i === 0 ? `par ${v}` : v));
+  return joinWords([...brands, ...payments.filter((v) => PAYMENT_WORDS[v]).map((v) => PAYMENT_WORDS[v])], 'ou');
 }
 
 function tone(p: BusinessProfile) {
@@ -111,14 +144,45 @@ export const ACTIONS: { id: AssistantAction; label: string }[] = [
 
 const question = (summary: string): AssistantReply['alert'] => ({ kind: 'question', summary });
 
-export function actionLabel(action: AssistantAction): string {
+// A restaurant has a menu and dishes, not a catalogue and products.
+const RESTAURANT_LABELS: Partial<Record<AssistantAction, string>> = {
+  catalog: 'Montrer le menu',
+  price: 'Donner le prix d’un plat',
+};
+
+/** The action as the owner reads it (« Me passer la main »). */
+export function actionLabel(action: AssistantAction, category?: CategoryId | null): string {
+  if (category === 'restaurant' && RESTAURANT_LABELS[action]) return RESTAURANT_LABELS[action];
   return ACTIONS.find((a) => a.id === action)?.label ?? action;
+}
+
+/** The same action in Tiko's own words, after a correction (« je vous passerai la main »). */
+export function actionPromise(p: BusinessProfile, faq: Pick<Faq, 'action' | 'productId' | 'answer'>): string {
+  const restaurant = p.category === 'restaurant';
+  switch (faq.action) {
+    case 'catalog':
+      return restaurant ? 'je montrerai le menu.' : 'je montrerai le catalogue.';
+    case 'price': {
+      const item = p.catalog.find((i) => i.id === faq.productId);
+      return item ? `je donnerai le prix de « ${item.name} ».` : 'je donnerai le prix.';
+    }
+    case 'delivery':
+      return 'j’expliquerai la livraison.';
+    case 'payment':
+      return 'j’expliquerai le paiement.';
+    case 'order':
+      return 'je prendrai la commande et je vous préviendrai.';
+    case 'handoff':
+      return 'je vous passerai la main.';
+    case 'custom':
+      return `je répondrai : « ${faq.answer} »`;
+  }
 }
 
 function catalogReply(p: BusinessProfile): AssistantReply {
   const word = getCategory(p.category)?.id === 'restaurant' ? 'notre menu' : 'nos produits';
   if (!p.catalog.length) {
-    return { text: 'Je vérifie avec le responsable et je reviens vers vous.', confident: false, alert: question('Demande le catalogue') };
+    return { text: 'Je me renseigne et je reviens vers vous très vite.', confident: false, alert: question('Demande le catalogue') };
   }
   return { text: `Voici ${word} :\n${listItems(p.catalog)}\n\n${signOff(p)}`, confident: true };
 }
@@ -130,7 +194,7 @@ function priceReply(p: BusinessProfile, items: CatalogItem[]): AssistantReply {
 
 function deliveryReply(p: BusinessProfile, message = ''): AssistantReply {
   if (!p.deliveryZones.length) return { text: 'Désolé, nous ne faisons pas de livraison pour le moment.', confident: true };
-  const fee = p.deliveryFee ? ` Frais de livraison : ${p.deliveryFee}.` : '';
+  const fee = p.deliveryFee ? ` Livraison : ${p.deliveryFee}.` : '';
   // Answer about the place the customer named, never a blanket "oui".
   const msg = normalize(message);
   const asked = ABIDJAN_ZONES.find((z) => z.value !== 'Tout Abidjan' && has(msg, [normalize(z.value)]));
@@ -138,33 +202,37 @@ function deliveryReply(p: BusinessProfile, message = ''): AssistantReply {
     const covered = p.deliveryZones.includes(asked.value) || (p.deliveryZones.includes('Tout Abidjan') && asked.value !== 'Intérieur du pays');
     if (!covered) {
       return {
-        text: `Désolé, nous ne livrons pas encore à ${asked.label}. Nous livrons : ${p.deliveryZones.join(', ')}. Je demande au responsable s’il peut s’arranger.`,
+        text: `Pour l’instant, nous ne livrons pas ${place(asked.value)} (nous livrons ${deliveryPlaces(p.deliveryZones)}). Je demande si c’est possible, on vous répond très vite.`,
         confident: false,
         alert: question(`Demande une livraison à ${asked.label}`),
       };
     }
-    return { text: `Oui, nous livrons à ${asked.label} !${fee}`, confident: true };
+    return { text: `Oui, nous livrons ${place(asked.value)} !${fee}`, confident: true };
   }
-  return { text: `Oui, nous livrons : ${p.deliveryZones.join(', ')}.${fee}`, confident: true };
+  return { text: `Oui, nous livrons ${deliveryPlaces(p.deliveryZones)}.${fee}`, confident: true };
 }
 
 function paymentReply(p: BusinessProfile): AssistantReply {
-  if (!p.payments.length) return { text: 'Je vérifie avec le responsable.', confident: false, alert: question('Demande comment payer') };
-  return { text: `Vous pouvez payer par : ${p.payments.join(', ')}.`, confident: true };
+  if (!p.payments.length) {
+    return { text: 'Je me renseigne et je reviens vers vous très vite.', confident: false, alert: question('Demande comment payer') };
+  }
+  return { text: `Vous pouvez payer ${paymentMethods(p.payments)}.`, confident: true };
 }
 
 function orderReply(p: BusinessProfile, items: CatalogItem[]): AssistantReply {
   if (!items.length) {
     return {
-      text: `Avec plaisir ! Qu’est-ce qui vous ferait plaisir ?\n${listItems(p.catalog, 5)}`,
+      text: p.catalog.length
+        ? `Avec plaisir ! Vous voulez prendre quoi ? Voici quelques idées :\n${listItems(p.catalog, 5)}`
+        : 'Avec plaisir ! Vous voulez prendre quoi ?',
       confident: false,
       alert: { kind: 'order', summary: 'Veut commander' },
     };
   }
   const chosen =
-    items.length === 1 ? `${items[0].name} : **${fcfa(items[0].price)}**.` : `\n${listItems(items)}\n`;
+    items.length === 1 ? `${items[0].name} : ${priceText(items[0].price)}.` : `\n${listItems(items)}\n`;
   return {
-    text: `Très bon choix ! ${chosen} Le responsable vous confirme la commande et la livraison dans quelques minutes.`,
+    text: `Très bon choix ! ${chosen} On vous confirme la commande et la livraison ici très vite.`,
     confident: false,
     alert: { kind: 'order', summary: `Veut commander : ${items.map((i) => i.name).join(', ')}` },
   };
@@ -172,9 +240,9 @@ function orderReply(p: BusinessProfile, items: CatalogItem[]): AssistantReply {
 
 function handoffReply(): AssistantReply {
   return {
-    text: 'Je préviens tout de suite le responsable, il vous répond ici très vite.',
+    text: 'D’accord ! Quelqu’un va vous répondre ici très vite.',
     confident: false,
-    alert: question('Veut parler au responsable'),
+    alert: question('Veut vous parler'),
   };
 }
 
@@ -227,7 +295,7 @@ export function replyTo(p: BusinessProfile, message: string): AssistantReply {
   // 3. Negotiation (wholesale, discounts) is the owner's call.
   if (has(msg, ['gros', 'grossiste*', 'reduction', 'remise', 'promo*', 'dernier prix', 'diminue*', 'baisse*'])) {
     return {
-      text: 'Bonne question ! Je demande au responsable et il vous répond très vite.',
+      text: 'Bonne question ! Je me renseigne, on vous répond ici très vite.',
       confident: false,
       alert: question(has(msg, ['gros', 'grossiste*']) ? 'Demande un prix de gros' : 'Demande une réduction'),
     };
@@ -253,7 +321,7 @@ export function replyTo(p: BusinessProfile, message: string): AssistantReply {
   // 8. Hours.
   if (has(msg, ['heure*', 'ouvert*', 'ferme*', 'horaire*', 'aujourd hui', 'dimanche', 'samedi', 'ce soir'])) {
     return {
-      text: p.hours ? `Nos horaires : ${p.hours}.` : 'Je vérifie nos horaires avec le responsable.',
+      text: p.hours ? `Nos horaires : ${p.hours}.` : 'Je vérifie nos horaires et je reviens vers vous très vite.',
       confident: !!p.hours,
       alert: p.hours ? undefined : question('Demande vos horaires'),
     };
@@ -263,7 +331,7 @@ export function replyTo(p: BusinessProfile, message: string): AssistantReply {
   if (has(msg, ['ou etes', 'etes ou', 'c est ou', 'ou exactement', 'ou se trouve', 'adresse', 'situe*', 'localisation', 'boutique', 'venir', 'vous etes ou'])) {
     if (category?.id === 'restaurant' || hasShop(p)) {
       return {
-        text: `Nous sommes à : ${p.location || 'adresse à confirmer'}.`,
+        text: p.location ? `Nous sommes à : ${p.location}.` : 'Je vous envoie notre adresse exacte très vite.',
         confident: !!p.location,
         alert: p.location ? undefined : question('Demande votre adresse'),
       };
@@ -272,7 +340,9 @@ export function replyTo(p: BusinessProfile, message: string): AssistantReply {
       .filter(Boolean)
       .join(', ');
     return {
-      text: `Nous vendons uniquement en ligne${socials ? ` (${socials})` : ''} et nous livrons partout où c’est indiqué.`,
+      text: `Nous n’avons pas de boutique : nous vendons en ligne${socials ? ` (${socials})` : ''}${
+        p.deliveryZones.length ? ` et nous livrons ${deliveryPlaces(p.deliveryZones)}` : ''
+      }.`,
       confident: true,
     };
   }
@@ -296,7 +366,7 @@ export function replyTo(p: BusinessProfile, message: string): AssistantReply {
   }
 
   return {
-    text: 'Je ne suis pas sûr de la réponse. Je transmets votre question au responsable, il vous répond très vite.',
+    text: 'Je préfère vérifier pour vous donner la bonne réponse. On vous répond ici très vite.',
     confident: false,
     alert: question(`« ${message.trim().slice(0, 60)} »`),
   };

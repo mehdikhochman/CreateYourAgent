@@ -6,7 +6,7 @@ import { BottomSheet } from '@/components/bottom-sheet';
 import { RichText, Text } from '@/components/text';
 import { Button, Chip, Field } from '@/components/ui';
 import { Colors, Radius, Spacing } from '@/constants/theme';
-import { ACTIONS, runAction } from '@/lib/mock-assistant';
+import { ACTIONS, actionLabel, runAction } from '@/lib/mock-assistant';
 import type { AssistantAction, BusinessProfile, Faq } from '@/state/types';
 
 export type CorrectionDraft = Pick<Faq, 'question' | 'action' | 'productId' | 'answer'>;
@@ -24,7 +24,7 @@ const ACTION_ICONS: Record<AssistantAction, LucideIcon> = {
 };
 
 /**
- * « Qu’aurait dû faire l’assistant ? » — the owner picks an action (show the
+ * « Que doit faire Tiko ? » — the owner picks an action (show the
  * catalogue, give a price…) or writes their own answer, and sees the reply
  * the assistant will send next time.
  */
@@ -93,7 +93,7 @@ function SheetBody({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
         <Text weight="extrabold" style={styles.title} accessibilityRole="header">
-          Qu’aurait dû faire l’assistant ?
+          Que doit faire Tiko ?
         </Text>
         {askQuestion ? (
           <Field label="Quand un client écrit" value={question} onChangeText={setQuestion} placeholder="Ex : Vous livrez à Bingerville ?" autoFocus />
@@ -109,17 +109,18 @@ function SheetBody({
           {ACTIONS.map((a) => {
             const on = action === a.id;
             const Icon = ACTION_ICONS[a.id];
+            const label = actionLabel(a.id, profile.category);
             return (
               <Pressable
                 key={a.id}
                 accessibilityRole="radio"
                 accessibilityState={{ checked: on }}
-                accessibilityLabel={a.label}
+                accessibilityLabel={label}
                 onPress={() => choose(a.id)}
                 style={({ pressed }) => [styles.action, on && styles.actionOn, pressed && styles.pressed]}>
                 <Icon size={22} color={Colors.ink} strokeWidth={2} />
                 <Text weight={on ? 'bold' : 'semibold'} style={styles.actionLabel}>
-                  {a.label}
+                  {label}
                 </Text>
                 {on ? <Check size={20} color={Colors.ink} strokeWidth={3} /> : null}
               </Pressable>
@@ -130,7 +131,7 @@ function SheetBody({
         {action === 'price' ? (
           <View style={styles.block}>
             <Text weight="bold" style={styles.blockTitle}>
-              Quel produit ?
+              {profile.category === 'restaurant' ? 'Quel plat ?' : 'Quel produit ?'}
             </Text>
             {profile.catalog.length ? (
               <View style={styles.chips}>
@@ -139,7 +140,7 @@ function SheetBody({
                 ))}
               </View>
             ) : (
-              <Text style={styles.hint}>Ajoutez d’abord vos produits dans l’onglet Assistant.</Text>
+              <Text style={styles.hint}>Vous n’avez pas encore de produits. Ajoutez-les dans Assistant › Produits et prix.</Text>
             )}
           </View>
         ) : null}
@@ -158,12 +159,12 @@ function SheetBody({
         {preview ? (
           <View style={styles.preview} accessibilityLiveRegion="polite">
             <Text weight="bold" style={styles.previewLabel}>
-              Aperçu de la réponse
+              Ce que Tiko répondra
             </Text>
             <View style={styles.previewBubble}>
               <RichText style={styles.previewText}>{preview.text}</RichText>
             </View>
-            {!preview.confident ? <Text style={styles.hint}>Et vous recevrez une notification.</Text> : null}
+            {!preview.confident ? <Text style={styles.hint}>Et Tiko vous préviendra.</Text> : null}
           </View>
         ) : null}
       </ScrollView>

@@ -29,20 +29,22 @@ export default function Learned() {
       : [...profile.faqs, { id: newId('faq'), ...draft, source: 'manual' as const }];
     updateProfile({ faqs });
     setEditing(null);
-    toast(id ? 'Réponse modifiée' : 'Réponse apprise par Tiko');
+    toast(id ? 'Réponse modifiée' : 'Tiko a appris cette réponse');
   };
 
   const remove = (faq: Faq) => {
-    updateProfile({ faqs: profile.faqs.filter((f) => f.id !== faq.id) });
-    toast('Réponse supprimée', 'info');
+    const before = profile.faqs;
+    updateProfile({ faqs: before.filter((f) => f.id !== faq.id) });
+    // One tap on the bin deletes: offer a way back.
+    toast('Réponse supprimée', 'info', { label: 'Annuler', onPress: () => updateProfile({ faqs: before }) });
   };
 
   const what = (f: Faq) =>
     f.action === 'custom'
       ? f.answer
       : f.action === 'price'
-        ? `${actionLabel(f.action)} : ${profile.catalog.find((i) => i.id === f.productId)?.name ?? '?'}`
-        : actionLabel(f.action);
+        ? `${actionLabel(f.action, profile.category)} : ${profile.catalog.find((i) => i.id === f.productId)?.name ?? '?'}`
+        : actionLabel(f.action, profile.category);
 
   return (
     <Screen

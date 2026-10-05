@@ -181,7 +181,7 @@ function ChannelsEditor({
               autoCorrect={false}
             />
           ))}
-          <Text style={styles.optional}>Facultatif : vous pourrez les ajouter plus tard.</Text>
+          <Text style={styles.optional}>Pas obligatoire : vous pourrez les ajouter plus tard.</Text>
         </View>
       ) : null}
     </View>

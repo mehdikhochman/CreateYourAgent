@@ -33,7 +33,7 @@ export default function QuestionsScreen() {
       header={<TopBar onBack={back} progress={{ value: position / total, label: `${position}/${total}` }} />}
       footer={
         <>
-          <Button label={isLast ? 'Créer mon assistant' : 'Continuer'} onPress={next} disabled={!step.optional && !answered} />
+          <Button label={isLast ? 'Terminer' : 'Continuer'} onPress={next} disabled={!step.optional && !answered} />
           {step.kind === 'catalog' && !answered ? (
             <Button label="Passer pour l’instant" variant="ghost" size="md" onPress={next} />
           ) : null}

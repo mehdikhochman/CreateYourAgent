@@ -15,6 +15,15 @@ function IconCircle({ children, background = Colors.surfaceMuted }: { children: 
   return <View style={[styles.iconCircle, { backgroundColor: background }]}>{children}</View>;
 }
 
+/**
+ * Link sent with « Partager l’app »: the web version's own address, or
+ * EXPO_PUBLIC_SHARE_URL in the APK (set it to the deployed `….expo.app` site).
+ */
+function shareLink(): string | undefined {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') return window.location.origin;
+  return process.env.EXPO_PUBLIC_SHARE_URL || undefined;
+}
+
 export default function Account() {
   const { profile, updateProfile, reset } = useAppState();
   const toast = useToast();
@@ -22,8 +31,10 @@ export default function Account() {
   const [name, setName] = useState(profile.ownerName);
 
   const share = async () => {
+    const link = shareLink();
+    const message = 'J’utilise CréeTonAgent : Tiko répond à mes clients sur WhatsApp, même la nuit.';
     try {
-      await Share.share({ message: 'CréeTonAgent : un assistant qui répond à vos clients sur WhatsApp, 24h/24.' });
+      await Share.share({ message: link ? `${message} Pour essayer : ${link}` : message });
     } catch {
       toast('Partage impossible sur cet appareil', 'error');
     }
@@ -36,7 +47,7 @@ export default function Account() {
       router.replace('/');
     };
     if (Platform.OS === 'web') return go();
-    Alert.alert('Recommencer la démo ?', 'Toutes les infos saisies seront effacées.', [
+    Alert.alert('Recommencer la démo ?', 'Tout ce que vous avez rempli sera effacé.', [
       { text: 'Annuler', style: 'cancel' },
       { text: 'Recommencer', style: 'destructive', onPress: go },
     ]);
@@ -100,11 +111,11 @@ export default function Account() {
             <Text weight="extrabold" style={styles.planTitle}>
               Essai gratuit
             </Text>
-            <Text style={styles.planText}>Gratuit pendant la phase de test</Text>
+            <Text style={styles.planText}>Rien à payer pendant le test</Text>
           </View>
         </View>
         <Text style={styles.planText}>
-          Ensuite <Text weight="extrabold" style={styles.planPrice}>7 500 F / mois</Text>, sans engagement, payé par :
+          Ensuite <Text weight="extrabold" style={styles.planPrice}>7 500 F par mois</Text>. Vous arrêtez quand vous voulez. Paiement par :
         </Text>
         <View style={styles.planLogos}>
           <PaymentLogo value="Wave" size={36} />
@@ -122,7 +133,7 @@ export default function Account() {
               <CircleHelp size={20} color={Colors.ink} strokeWidth={2.2} />
             </IconCircle>
           }
-          onPress={() => toast('L’équipe vous répond sur WhatsApp (bientôt disponible)', 'info')}
+          onPress={() => toast('Bientôt, vous pourrez écrire à notre équipe sur WhatsApp.', 'info')}
         />
         <Row
           label="Partager l’app"

@@ -75,14 +75,14 @@ export default function ConversationScreen() {
               {conversation.aiPaused ? 'Vos messages partent depuis votre WhatsApp.' : 'Prenez la main pour répondre vous-même.'}
             </Text>
           </View>
-          {conversation.aiPaused ? <LinkButton label="Rendre la main" onPress={() => setPaused(false)} color={Colors.green} /> : null}
+          {conversation.aiPaused ? <LinkButton label="Rendre la main à Tiko" onPress={() => setPaused(false)} color={Colors.green} /> : null}
         </View>
 
         {conversation.needsAttention && conversation.alert ? (
           <View style={styles.alert}>
             <Bell size={18} color={Colors.link} strokeWidth={2.4} />
             <Text weight="bold" style={styles.alertText}>
-              {conversation.alert.kind === 'order' ? 'Commande' : 'Question'} : {conversation.alert.summary}
+              {conversation.alert.summary}
             </Text>
           </View>
         ) : null}
@@ -110,7 +110,7 @@ export default function ConversationScreen() {
               value={input}
               onChange={setInput}
               onSend={send}
-              onMic={() => toast('Messages vocaux : bientôt disponibles', 'info')}
+              onMic={() => toast('Les messages vocaux arrivent bientôt. Pour l’instant, écrivez.', 'info')}
               placeholder="Votre réponse…"
             />
           ) : (

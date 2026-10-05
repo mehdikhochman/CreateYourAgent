@@ -16,6 +16,15 @@ const FILTERS: { id: Filter; label: string; test: (c: Conversation) => boolean }
   { id: 'mine', label: 'Vous avez la main', test: (c) => c.aiPaused },
 ];
 
+const EMPTY: Record<Filter, { title: string; text: string }> = {
+  all: { title: 'Pas encore de messages', text: 'Quand un client écrit sur WhatsApp, la conversation s’affiche ici.' },
+  todo: { title: 'Rien à traiter', text: 'Tiko a répondu à tout le monde.' },
+  mine: {
+    title: 'Vous ne répondez à aucun client',
+    text: 'Ouvrez une conversation et touchez « Je prends la main » pour répondre vous-même.',
+  },
+};
+
 /** Every WhatsApp conversation, newest first; the owner can open one and take over. */
 export default function Conversations() {
   const params = useLocalSearchParams<{ filter?: Filter }>();
@@ -92,11 +101,7 @@ export default function Conversations() {
           })}
         </Group>
       ) : (
-        <EmptyState
-          pose={filter === 'todo' ? 'happy' : 'sleep'}
-          title={filter === 'todo' ? 'Rien à traiter' : 'Aucune conversation ici'}
-          text={filter === 'todo' ? 'Tiko a répondu à tout le monde.' : 'Les conversations apparaîtront ici.'}
-        />
+        <EmptyState pose={filter === 'todo' ? 'happy' : 'sleep'} title={EMPTY[filter].title} text={EMPTY[filter].text} />
       )}
     </Screen>
   );

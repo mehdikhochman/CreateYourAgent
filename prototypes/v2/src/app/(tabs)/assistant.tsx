@@ -69,7 +69,7 @@ export default function Assistant() {
       updateProfile({ logoUri: result.assets[0].uri });
       toast('Photo du commerce enregistrée');
     } catch {
-      toast('Impossible d’ouvrir vos photos', 'error');
+      toast('Impossible d’ouvrir vos photos. Autorisez l’accès aux photos dans les Réglages du téléphone.', 'error');
     }
   };
 
@@ -99,8 +99,8 @@ export default function Assistant() {
             <ProgressBar value={done.length / Math.max(1, required.length)} color={Colors.success} height={8} />
           </View>
           <Text style={styles.completionText}>
-            {done.length} infos sur {required.length}
-            {missing ? ` · ajoutez : ${(STEP_LABELS[missing.id] ?? missing.title).toLowerCase()}` : ' · tout est complet'}
+            {done.length} sur {required.length} remplies
+            {missing ? ` · il manque : ${(STEP_LABELS[missing.id] ?? missing.title).toLowerCase()}` : ' · tout est rempli'}
           </Text>
         </View>
       </View>
@@ -123,14 +123,14 @@ export default function Assistant() {
         })}
       </Group>
 
-      <SectionLabel style={styles.section}>Ce qu’il a appris</SectionLabel>
+      <SectionLabel style={styles.section}>Ce que Tiko a appris</SectionLabel>
       <Group>
         <Row
           label="Réponses apprises"
           description={
             profile.faqs.length
               ? `${profile.faqs.length} réponse${profile.faqs.length > 1 ? 's' : ''} · modifier ou supprimer`
-              : 'Modifier ou supprimer ce que vous lui avez appris'
+              : 'Rien pour l’instant. Apprenez-lui vos réponses.'
           }
           left={<TikoAvatar size={44} />}
           onPress={() => router.push('/learned')}

@@ -13,7 +13,7 @@ const SLIDES: { pose: TikoPose; bubble: string; title: string; text: string }[] 
     pose: 'hello',
     bubble: 'Bonjour, je suis Tiko !',
     title: 'Je réponds à vos clients sur WhatsApp',
-    text: 'Prix, livraison, paiement : je réponds 24h/24 pendant que vous travaillez. Je suis prêt en 5 minutes.',
+    text: 'Prix, livraison, paiement : je réponds 24h/24 pendant que vous travaillez. Je suis prêt en quelques minutes.',
   },
   {
     pose: 'think',

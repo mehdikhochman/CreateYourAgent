@@ -34,7 +34,8 @@ export function CatalogEditor({
 
   const add = () => {
     if (!name.trim()) return;
-    onChange([...items, { id: newId('p'), name: name.trim(), price: formatPrice(price) || '?' }]);
+    // No price yet: the list shows « Prix à ajouter » and Tiko answers « prix sur demande ».
+    onChange([...items, { id: newId('p'), name: name.trim(), price: formatPrice(price) }]);
     setName('');
     setPrice('');
   };
@@ -46,7 +47,10 @@ export function CatalogEditor({
       if (source === 'camera') {
         const perm = await ImagePicker.requestCameraPermissionsAsync();
         if (!perm.granted) {
-          Alert.alert('Appareil photo', 'Autorisez l’appareil photo dans les réglages pour utiliser cette option.');
+          Alert.alert(
+            'Accès à l’appareil photo',
+            `Pour photographier ${isRestaurant ? 'votre menu' : 'votre liste de prix'}, autorisez l’appareil photo dans les Réglages du téléphone. Ou touchez « Mes photos ».`,
+          );
           return;
         }
       }
@@ -87,23 +91,21 @@ export function CatalogEditor({
               Le plus rapide : une photo
             </Text>
             <Text style={styles.photoText}>
-              Prenez en photo votre {isRestaurant ? 'menu' : 'liste de prix ou vos produits'} : on lit les noms et les prix pour vous.
+              Prenez en photo votre {isRestaurant ? 'menu' : 'liste de prix ou vos produits'} : Tiko lit les noms et les prix pour vous.
             </Text>
             <View style={styles.photoButtons}>
               <Button
-                label="Photo"
+                label="Prendre une photo"
                 size="md"
                 icon={<Camera size={20} color={Colors.onPrimary} strokeWidth={2.2} />}
                 onPress={() => fromPhoto('camera')}
-                style={styles.flex}
               />
               <Button
-                label="Galerie"
+                label="Mes photos"
                 size="md"
                 variant="secondary"
                 icon={<Images size={20} color={Colors.ink} strokeWidth={2.2} />}
                 onPress={() => fromPhoto('library')}
-                style={styles.flex}
               />
             </View>
           </>
@@ -121,9 +123,15 @@ export function CatalogEditor({
                 <Text weight="semibold" style={styles.itemName} numberOfLines={2}>
                   {item.name}
                 </Text>
-                <Text weight="extrabold" style={styles.itemPrice}>
-                  {item.price} F
-                </Text>
+                {item.price ? (
+                  <Text weight="extrabold" style={styles.itemPrice}>
+                    {item.price} F
+                  </Text>
+                ) : (
+                  <Text weight="semibold" style={styles.itemNoPrice}>
+                    Prix à ajouter
+                  </Text>
+                )}
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={`Supprimer ${item.name}`}
@@ -178,7 +186,8 @@ const styles = StyleSheet.create({
   photoCard: { backgroundColor: Colors.primarySoft, borderRadius: Radius.lg, padding: Spacing.md, gap: 10 },
   photoTitle: { fontSize: 17, color: Colors.ink },
   photoText: { fontSize: 15, lineHeight: 21, color: Colors.muted },
-  photoButtons: { flexDirection: 'row', gap: 10, marginTop: 4 },
+  // Stacked: « Prendre une photo » does not fit side by side on a small phone.
+  photoButtons: { gap: 10, marginTop: 4 },
   reading: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 92 },
   listWrap: { gap: 10 },
   list: { borderWidth: 1.5, borderColor: Colors.border },
@@ -186,6 +195,7 @@ const styles = StyleSheet.create({
   divider: { borderBottomWidth: 1, borderBottomColor: '#EDEDF0' },
   itemName: { flex: 1, fontSize: 15 },
   itemPrice: { fontSize: 15 },
+  itemNoPrice: { fontSize: 14, color: Colors.muted },
   remove: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', gap: 10, alignItems: 'center' },
   currency: { fontSize: 17, color: Colors.muted },
