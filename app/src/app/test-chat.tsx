@@ -3,7 +3,6 @@ import { useRef, useState } from 'react';
 import {
   FlatList,
   KeyboardAvoidingView,
-  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -14,10 +13,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, ChatBubble, Field, Subtitle, Title } from '@/components/ui';
+import { CorrectionSheet, type CorrectionDraft, type CorrectionInitial } from '@/components/correction-sheet';
+import { Button, ChatBubble } from '@/components/ui';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 import { newId, nowTime } from '@/lib/ids';
-import { replyTo, suggestedQuestions } from '@/lib/mock-assistant';
+import { actionLabel, replyTo, suggestedQuestions } from '@/lib/mock-assistant';
 import { useAppState } from '@/state/app-state';
 import type { Message } from '@/state/types';
 
@@ -28,8 +28,7 @@ export default function TestChat() {
   const { profile, updateProfile } = useAppState();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
-  const [correcting, setCorrecting] = useState<ChatMessage | null>(null);
-  const [correction, setCorrection] = useState('');
+  const [correcting, setCorrecting] = useState<CorrectionInitial | null>(null);
   const listRef = useRef<FlatList<ChatMessage>>(null);
 
   const send = (text: string) => {
@@ -53,28 +52,19 @@ export default function TestChat() {
 
   const rate = (msg: ChatMessage, rating: 'up' | 'down') => {
     setMessages((m) => m.map((x) => (x.id === msg.id ? { ...x, rated: rating } : x)));
-    if (rating === 'down') {
-      setCorrection('');
-      setCorrecting(msg);
+    if (rating === 'down' && msg.question) {
+      setCorrecting({ question: msg.question, answer: '' });
     }
   };
 
-  const saveCorrection = () => {
-    if (!correcting?.question || !correction.trim()) return;
+  const saveCorrection = (draft: CorrectionDraft) => {
     updateProfile({
-      faqs: [
-        ...profile.faqs,
-        { id: newId('faq'), question: correcting.question, answer: correction.trim(), source: 'correction' },
-      ],
+      faqs: [...profile.faqs, { id: newId('faq'), ...draft, source: 'correction' }],
     });
+    const what = draft.action === 'custom' ? `je répondrai :\n« ${draft.answer} »` : `je ferai : ${actionLabel(draft.action)}.`;
     setMessages((m) => [
       ...m,
-      {
-        id: newId('m'),
-        role: 'owner',
-        text: `✅ Compris ! La prochaine fois je répondrai :\n« ${correction.trim()} »`,
-        time: nowTime(),
-      },
+      { id: newId('m'), role: 'owner', text: `✅ Compris ! Quand on m’écrira « ${draft.question} », ${what}`, time: nowTime() },
     ]);
     setCorrecting(null);
   };
@@ -161,21 +151,13 @@ export default function TestChat() {
         ) : null}
       </KeyboardAvoidingView>
 
-      <Modal visible={!!correcting} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setCorrecting(null)}>
-        <SafeAreaView style={styles.modal}>
-          <Title>Quelle est la bonne réponse ?</Title>
-          <Subtitle>Question du client : « {correcting?.question} »</Subtitle>
-          <Field
-            value={correction}
-            onChangeText={setCorrection}
-            placeholder="Ex : Oui, on livre à Yopougon pour 1 500 F."
-            multiline
-            autoFocus
-          />
-          <Button label="Enregistrer" onPress={saveCorrection} disabled={!correction.trim()} />
-          <Button label="Annuler" variant="ghost" onPress={() => setCorrecting(null)} />
-        </SafeAreaView>
-      </Modal>
+      <CorrectionSheet
+        visible={!!correcting}
+        profile={profile}
+        initial={correcting}
+        onCancel={() => setCorrecting(null)}
+        onSave={saveCorrection}
+      />
     </SafeAreaView>
   );
 }
@@ -228,5 +210,4 @@ const styles = StyleSheet.create({
   sendDisabled: { opacity: 0.4 },
   sendIcon: { color: '#fff', fontSize: 20 },
   footer: { paddingHorizontal: Spacing.md, paddingBottom: Spacing.sm },
-  modal: { flex: 1, padding: Spacing.lg, gap: Spacing.md, backgroundColor: Colors.background },
 });

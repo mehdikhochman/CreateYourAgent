@@ -7,17 +7,12 @@ import { getCategory } from '@/data/categories';
 import { useAppState } from '@/state/app-state';
 
 export default function Home() {
-  const { profile, conversations, reset } = useAppState();
+  const { profile, conversations } = useAppState();
   const category = getCategory(profile.category);
 
   const answered = conversations.reduce((n, c) => n + c.messages.filter((m) => m.role === 'assistant').length, 0);
   const attention = conversations.filter((c) => c.needsAttention).length;
   const sorted = [...conversations].sort((a, b) => Number(b.needsAttention) - Number(a.needsAttention));
-
-  const restart = () => {
-    reset();
-    router.replace('/');
-  };
 
   return (
     <Screen edges={['top', 'bottom']}>
@@ -28,10 +23,18 @@ export default function Home() {
             {category?.emoji} {profile.name || 'Mon business'}
           </Text>
         </View>
-        <View style={styles.status}>
-          <View style={styles.dot} />
-          <Text style={styles.statusText}>Assistant actif</Text>
-        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Mon assistant : modifier mes infos"
+          onPress={() => router.push('/settings')}
+          style={styles.gear}>
+          <Text style={styles.gearIcon}>⚙️</Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.status}>
+        <View style={styles.dot} />
+        <Text style={styles.statusText}>Assistant actif sur WhatsApp</Text>
       </View>
 
       <View style={styles.stats}>
@@ -89,7 +92,7 @@ export default function Home() {
 
       <View style={styles.actions}>
         <Button label="Tester mon assistant" icon="💬" variant="secondary" onPress={() => router.push('/test-chat')} />
-        <Button label="Recommencer la démo" variant="ghost" onPress={restart} />
+        <Button label="Modifier mes infos" icon="✏️" variant="ghost" onPress={() => router.push('/settings')} />
       </View>
     </Screen>
   );
@@ -100,7 +103,17 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   hello: { fontSize: 15, color: Colors.textMuted },
   business: { fontSize: 24, fontWeight: '800', color: Colors.text },
+  gear: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gearIcon: { fontSize: 22 },
   status: {
+    alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,

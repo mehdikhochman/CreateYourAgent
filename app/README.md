@@ -20,11 +20,19 @@ WhatsApp en quelques minutes.
    - Restaurant : nom → adresse → horaires → sur place / à emporter / livraison →
      menu → livraison *(si proposée)* → paiement → ton
    - Produits/menu : **photo de la liste de prix** (extraction simulée) ou ajout à la main
-5. **Tester mon assistant** : on écrit comme un client ; 👎🏾 sur une mauvaise
-   réponse → on donne la bonne → l’assistant la réutilise
-6. **Connecter WhatsApp** (QR code simulé)
-7. **Accueil** : statistiques, conversations, badge « À traiter », et
+5. **Animation 3D** : le robot assistant apparaît, salue et lance des confettis
+   (three.js via react-three-fiber + expo-gl)
+6. **Tester mon assistant** : on écrit comme un client. 👎🏾 sur une mauvaise
+   réponse → on choisit ce que l’assistant aurait dû faire (montrer le
+   catalogue, donner un prix, expliquer la livraison ou le paiement, prendre la
+   commande, passer la main, ou écrire sa propre réponse) avec un aperçu
+7. **Connecter WhatsApp** (QR code simulé)
+8. **Accueil** : statistiques, conversations, badge « À traiter », et
    **« Je prends la main »** pour répondre soi-même à un client
+9. **Mon assistant** (⚙️ sur l’accueil) : toutes les infos restent modifiables
+   (nom, adresse, horaires, produits, livraison, paiement, ton…), avec
+   Enregistrer / Annuler, plus la liste des **réponses apprises** à modifier ou
+   supprimer
 
 ## Lancer l’app sur votre iPhone (sans Mac)
 
@@ -67,5 +75,7 @@ Structure :
 - `src/app/` — écrans (Expo Router : un fichier = un écran)
 - `src/data/categories.ts` — activités et questions du parcours (ajouter un métier ici)
 - `src/lib/mock-assistant.ts` — assistant simulé, **à remplacer par l’appel au backend + IA**
+- `src/components/robot-3d/` — scène 3D de l’animation de création
+- `src/components/step-editor.tsx` — champs partagés entre le questionnaire et « Mon assistant »
 - `src/state/` — état de l’app (en mémoire pour le prototype)
 - `src/components/` — composants d’interface

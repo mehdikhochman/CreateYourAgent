@@ -33,6 +33,9 @@ type AppState = {
   updateConversation: (id: string, update: (c: Conversation) => Conversation) => void;
   goLive: () => void;
   reset: () => void;
+  /** Short confirmation shown once on the next screen (e.g. « Adresse mise à jour »). */
+  flash: string | null;
+  setFlash: (message: string | null) => void;
 };
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -40,6 +43,7 @@ const AppStateContext = createContext<AppState | null>(null);
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<BusinessProfile>(EMPTY_PROFILE);
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [flash, setFlash] = useState<string | null>(null);
 
   const updateProfile = useCallback((patch: Partial<BusinessProfile>) => {
     setProfile((p) => ({ ...p, ...patch }));
@@ -64,8 +68,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ profile, updateProfile, conversations, updateConversation, goLive, reset }),
-    [profile, updateProfile, conversations, updateConversation, goLive, reset],
+    () => ({ profile, updateProfile, conversations, updateConversation, goLive, reset, flash, setFlash }),
+    [profile, updateProfile, conversations, updateConversation, goLive, reset, flash],
   );
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;

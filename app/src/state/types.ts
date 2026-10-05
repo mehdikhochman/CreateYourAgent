@@ -6,9 +6,23 @@ export type CatalogItem = {
   price: string; // free text in FCFA, e.g. "2 500"
 };
 
+/** What the assistant should do when a learned question comes back. */
+export type AssistantAction =
+  | 'catalog'
+  | 'price'
+  | 'delivery'
+  | 'payment'
+  | 'order'
+  | 'handoff'
+  | 'custom';
+
 export type Faq = {
   id: string;
   question: string;
+  action: AssistantAction;
+  /** Product to quote for the 'price' action. */
+  productId?: string;
+  /** Owner's own words for the 'custom' action. */
   answer: string;
   source: 'manual' | 'correction';
 };

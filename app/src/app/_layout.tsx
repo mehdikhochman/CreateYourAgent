@@ -24,6 +24,10 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding/whatsapp" options={{ title: 'Connecter WhatsApp' }} />
         <Stack.Screen name="home" options={{ headerShown: false, gestureEnabled: false }} />
         <Stack.Screen name="conversation/[id]" options={{ title: '' }} />
+        <Stack.Screen name="celebration" options={{ headerShown: false, gestureEnabled: false, animation: 'fade' }} />
+        <Stack.Screen name="settings" options={{ title: 'Mon assistant' }} />
+        <Stack.Screen name="edit/[step]" options={{ title: '' }} />
+        <Stack.Screen name="learned" options={{ title: 'Réponses apprises' }} />
       </Stack>
     </AppStateProvider>
   );

@@ -42,7 +42,8 @@
           "photosPermission": "CréeTonAgent utilise vos photos pour lire votre menu ou votre liste de prix.",
           "cameraPermission": "CréeTonAgent utilise l'appareil photo pour photographier votre menu ou vos produits."
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,

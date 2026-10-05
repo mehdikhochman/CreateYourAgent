@@ -248,6 +248,21 @@ export const CATEGORIES: Category[] = [
   },
 ];
 
+/** Short names used in the « Mon assistant » settings list. */
+export const STEP_LABELS: Record<string, string> = {
+  name: 'Nom',
+  salesChannels: 'Où vous vendez',
+  socials: 'Comptes en ligne',
+  location: 'Adresse',
+  hours: 'Horaires',
+  serviceModes: 'Services',
+  catalog: 'Produits et prix',
+  deliveryZones: 'Zones de livraison',
+  deliveryFee: 'Frais de livraison',
+  payments: 'Paiement',
+  tone: 'Ton de l’assistant',
+};
+
 export function getCategory(id: CategoryId | null): Category | undefined {
   return CATEGORIES.find((c) => c.id === id);
 }
@@ -258,4 +273,31 @@ export function visibleSteps(category: Category, profile: BusinessProfile): Step
 
 export function optionLabel(options: Option[], value: string): string {
   return options.find((o) => o.value === value)?.label ?? value;
+}
+
+export function isStepAnswered(step: Step, p: BusinessProfile): boolean {
+  switch (step.kind) {
+    case 'text':
+      return p[step.field].trim().length > 0;
+    case 'choice':
+      return p[step.field].length > 0;
+    case 'catalog':
+      return p.catalog.length > 0;
+    case 'socials':
+      return true;
+  }
+}
+
+/** One-line summary of an answer, for the settings list. Empty = not filled. */
+export function stepSummary(step: Step, p: BusinessProfile): string {
+  switch (step.kind) {
+    case 'text':
+      return p[step.field].trim();
+    case 'choice':
+      return p[step.field].map((v) => optionLabel(step.options, v)).join(', ');
+    case 'catalog':
+      return p.catalog.length ? `${p.catalog.length} produit${p.catalog.length > 1 ? 's' : ''}` : '';
+    case 'socials':
+      return [p.tiktok, p.instagram, p.facebook].filter(Boolean).join(' · ');
+  }
 }

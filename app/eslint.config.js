@@ -6,5 +6,10 @@ module.exports = defineConfig([
   expoConfig,
   {
     ignores: ["dist/*"],
+  },
+  {
+    // react-three-fiber uses three.js props (args, emissive, intensity…) on JSX elements.
+    files: ["src/components/robot-3d/**"],
+    rules: { "react/no-unknown-property": "off" },
   }
 ]);
