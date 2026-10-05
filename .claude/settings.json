@@ -9,6 +9,7 @@
   },
   "enabledPlugins": {
     "engineering@knowledge-work-plugins": true,
-    "design@knowledge-work-plugins": true
+    "design@knowledge-work-plugins": true,
+    "expo@anthropic-plugin-directory": true
   }
 }

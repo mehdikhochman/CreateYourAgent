@@ -34,12 +34,14 @@ Android : voir [`prototypes/v2/README.md`](prototypes/v2/README.md).
 
 ## Plugins Claude du projet
 
-`.claude/settings.json` active deux plugins d’Anthropic pour chaque session
-Claude Code ouverte sur ce dépôt :
+`.claude/settings.json` active trois plugins pour chaque session Claude Code
+ouverte sur ce dépôt :
 
 - **design** : `/design:ux-copy`, `/design:design-critique`, `/design:accessibility-review`,
   `/design:user-research`, `/design:research-synthesis`, `/design:design-system`, `/design:design-handoff`
 - **engineering** : `/engineering:system-design`, `/engineering:architecture`, `/engineering:testing-strategy`,
   `/engineering:debug`, `/engineering:deploy-checklist`, `/engineering:code-review`, …
+- **expo** (par l’équipe Expo) : Expo Router, animations, publication web (`eas-hosting`),
+  mises à jour, App Store et Play Store
 
 Tapez `/` dans Claude pour voir la liste.
