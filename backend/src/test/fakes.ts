@@ -1,5 +1,5 @@
 import type { Config } from '../config';
-import type { Db } from '../db/pool';
+import type { Db, DbClient } from '../db/pool';
 import type {
   AppDeps,
   Clock,
@@ -88,8 +88,11 @@ export class FakeWhatsApp implements WhatsAppSender {
 
 export class FakeJobQueue implements JobQueue {
   jobs: EnqueueJob[] = [];
-  async enqueue(job: EnqueueJob) {
+  /** Whether each job was enqueued inside a caller's transaction. */
+  inTransaction: boolean[] = [];
+  async enqueue(job: EnqueueJob, client?: DbClient) {
     this.jobs.push(job);
+    this.inTransaction.push(client !== undefined);
   }
 }
 

@@ -1,0 +1,21 @@
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "102290129340398",
+      "time": 1791194400,
+      "changes": [
+        {
+          "value": {
+            "event": "APPROVED",
+            "message_template_id": 1689556908129832,
+            "message_template_name": "rappel_paiement",
+            "message_template_language": "fr",
+            "reason": "NONE"
+          },
+          "field": "message_template_status_update"
+        }
+      ]
+    }
+  ]
+}

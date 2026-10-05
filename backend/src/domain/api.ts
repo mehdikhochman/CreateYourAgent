@@ -232,9 +232,14 @@ export type MessageDTO = {
   status: MessageStatus;
   /** Set for messages the owner sent from the app. */
   clientId: string | null;
+  /** Why sending failed (status 'failed'), in French for the owner. */
+  error: string | null;
   createdAt: string;
   rev: number;
 };
+
+/** Columns for MessageRow, for SELECT … / RETURNING …. */
+export const MESSAGE_COLUMNS = 'id, conversation_id, role, kind, text, status, client_id, error, created_at, rev';
 
 export type MessageRow = {
   id: string;
@@ -244,6 +249,7 @@ export type MessageRow = {
   text: string;
   status: MessageStatus;
   client_id: string | null;
+  error: string | null;
   created_at: Date;
   rev: number;
 };
@@ -257,6 +263,7 @@ export function toMessageDTO(r: MessageRow): MessageDTO {
     text: r.text,
     status: r.status,
     clientId: r.client_id,
+    error: r.error,
     createdAt: r.created_at.toISOString(),
     rev: r.rev,
   };

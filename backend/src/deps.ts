@@ -7,7 +7,7 @@
  * now() for that, so tests can control time.
  */
 import type { Config } from './config';
-import type { Db } from './db/pool';
+import type { Db, DbClient } from './db/pool';
 import type { Assistant } from './engine/types';
 
 export interface Clock {
@@ -57,7 +57,11 @@ export type EnqueueJob = {
 };
 
 export interface JobQueue {
-  enqueue(job: EnqueueJob): Promise<void>;
+  /**
+   * Pass the transaction's client to enqueue atomically with the rows that
+   * caused the job (e.g. the customer message), so a job is never lost.
+   */
+  enqueue(job: EnqueueJob, client?: DbClient): Promise<void>;
 }
 
 export type AppDeps = {

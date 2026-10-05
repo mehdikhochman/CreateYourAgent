@@ -1,0 +1,27 @@
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "102290129340398",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": { "display_phone_number": "15550100", "phone_number_id": "1234567890" },
+            "message_echoes": [
+              {
+                "from": "15550100",
+                "to": "2250748123390",
+                "id": "wamid.HBgNMjI1MDc0ODEyMzM5MBUCABEYEkVDSE8wMDAwMDAwMDAwMDAwMQA=",
+                "timestamp": "1791194405",
+                "type": "text",
+                "text": { "body": "Oui ma sœur, il reste en rouge. Je vous l'envoie demain." }
+              }
+            ]
+          },
+          "field": "smb_message_echoes"
+        }
+      ]
+    }
+  ]
+}

@@ -18,7 +18,7 @@ export type Routers = {
  * Assembles the HTTP app. src/app.ts calls it with every module's routers;
  * module tests call it with just their own router.
  */
-export function buildApp(deps: Pick<AppDeps, 'config' | 'clock' | 'log'>, routers: Routers): Hono {
+export function buildApp(deps: Pick<AppDeps, 'config' | 'clock' | 'log' | 'db'>, routers: Routers): Hono {
   const app = new Hono();
   app.onError(errorHandler(deps.log));
   app.notFound((c) => c.json({ error: { code: 'not_found', message: 'Not found' } }, 404));
