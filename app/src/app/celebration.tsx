@@ -1,14 +1,23 @@
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
-import { Component, useEffect, useState, type ReactNode } from 'react';
+import { Component, Suspense, lazy, useEffect, useState, type ErrorInfo, type ReactNode } from 'react';
 import { AccessibilityInfo, Animated, Platform, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Canvas } from '@/components/robot-3d/fiber';
-import { RobotScene } from '@/components/robot-3d/robot-scene';
 import { Button } from '@/components/ui';
 import { Colors, Spacing } from '@/constants/theme';
 import { useAppState } from '@/state/app-state';
+
+// Loaded on demand: if 3D can't start on a phone, only this screen falls back.
+const RobotCanvas = lazy(() => import('@/components/robot-3d/robot-canvas'));
+
+function EmojiRobot() {
+  return (
+    <View style={styles.fallback}>
+      <Text style={styles.fallbackEmoji}>🤖</Text>
+    </View>
+  );
+}
 
 /** If 3D can't start on a device, show a simple emoji robot instead of a blank screen. */
 class Fallback3D extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -16,15 +25,11 @@ class Fallback3D extends Component<{ children: ReactNode }, { failed: boolean }>
   static getDerivedStateFromError() {
     return { failed: true };
   }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn('3D animation unavailable, showing the emoji robot instead:', error.message, info.componentStack);
+  }
   render() {
-    if (this.state.failed) {
-      return (
-        <View style={styles.fallback}>
-          <Text style={styles.fallbackEmoji}>🤖</Text>
-        </View>
-      );
-    }
-    return this.props.children;
+    return this.state.failed ? <EmojiRobot /> : this.props.children;
   }
 }
 
@@ -55,9 +60,9 @@ export default function Celebration() {
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <View style={styles.stage} accessible accessibilityLabel="Animation : votre assistant robot apparaît et vous salue">
         <Fallback3D>
-          <Canvas camera={{ position: [0, 0.4, 6], fov: 40 }} style={styles.canvas}>
-            <RobotScene reduceMotion={reduceMotion} />
-          </Canvas>
+          <Suspense fallback={<EmojiRobot />}>
+            <RobotCanvas reduceMotion={reduceMotion} />
+          </Suspense>
         </Fallback3D>
       </View>
 
@@ -79,7 +84,6 @@ export default function Celebration() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.primarySoft },
   stage: { flex: 1 },
-  canvas: { flex: 1 },
   fallback: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   fallbackEmoji: { fontSize: 120 },
   panel: { paddingHorizontal: Spacing.lg, paddingBottom: Spacing.md, gap: Spacing.md },
