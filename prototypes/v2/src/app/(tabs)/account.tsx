@@ -91,6 +91,7 @@ export default function Account() {
         />
         <Row
           label="WhatsApp"
+          description={profile.whatsappPhone || undefined}
           right={<Badge label={profile.whatsappConnected ? 'Connecté' : 'Non connecté'} tone={profile.whatsappConnected ? 'green' : 'neutral'} />}
           left={
             <IconCircle background={Colors.greenSoft}>

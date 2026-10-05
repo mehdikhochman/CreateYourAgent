@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { Camera, MapPin, MessageCircle } from '@/components/icons';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Switch, View } from 'react-native';
 
 import { ChannelLogo, PaymentLogo } from '@/components/brand/logos';
 import { useToast } from '@/components/feedback';
@@ -73,6 +73,11 @@ export default function Assistant() {
     }
   };
 
+  const toggleAnnounce = (announceAssistant: boolean) => {
+    updateProfile({ announceAssistant });
+    toast(announceAssistant ? 'Tiko se présentera aux nouveaux clients' : 'Tiko ne se présentera plus', 'info');
+  };
+
   return (
     <Screen edges={['top']} background={Colors.background} contentStyle={styles.content}>
       <Text weight="extrabold" style={styles.title} accessibilityRole="header">
@@ -121,6 +126,28 @@ export default function Assistant() {
             />
           );
         })}
+      </Group>
+
+      <SectionLabel style={styles.section}>Avec vos clients</SectionLabel>
+      <Group>
+        <Row
+          label="Tiko se présente"
+          description={
+            profile.announceAssistant
+              ? 'Dans son premier message, Tiko dit qu’il est l’assistant de votre commerce.'
+              : 'Tiko ne dit pas à vos clients qu’il est un assistant.'
+          }
+          right={
+            <Switch
+              value={profile.announceAssistant}
+              onValueChange={toggleAnnounce}
+              trackColor={{ true: Colors.green, false: Colors.border }}
+              thumbColor="#FFFFFF"
+              accessibilityLabel="Tiko se présente aux nouveaux clients"
+            />
+          }
+          last
+        />
       </Group>
 
       <SectionLabel style={styles.section}>Ce que Tiko a appris</SectionLabel>

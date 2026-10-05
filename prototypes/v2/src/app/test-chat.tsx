@@ -13,7 +13,7 @@ import { TikoAvatar } from '@/components/tiko/tiko';
 import { Button } from '@/components/ui';
 import { Colors, Spacing } from '@/constants/theme';
 import { newId, nowTime } from '@/lib/ids';
-import { actionPromise, replyTo, suggestedQuestions, type AssistantReply } from '@/lib/mock-assistant';
+import { actionPromise, replyToCustomer, suggestedQuestions, type AssistantReply } from '@/lib/mock-assistant';
 import { useAppState } from '@/state/app-state';
 
 type ChatMessage =
@@ -57,7 +57,8 @@ export default function TestChat() {
     setMessages((m) => [...m, { id, role: 'customer', text: question, time: nowTime(), status: 'delivered' }]);
     setInput('');
     // The profile passed here includes answers taught earlier in this session.
-    const reply = replyTo(profile, question);
+    // The test plays a new customer, so Tiko's first reply introduces itself.
+    const reply = replyToCustomer(profile, question, !messages.some((m) => m.role === 'assistant'));
     later(() => {
       setMessages((m) => m.map((x) => (x.id === id && x.role === 'customer' ? { ...x, status: 'read' } : x)));
       setTyping(true);

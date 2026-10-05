@@ -27,6 +27,8 @@ export const EMPTY_PROFILE: BusinessProfile = {
   catalog: [],
   faqs: [],
   whatsappConnected: false,
+  whatsappPhone: '',
+  announceAssistant: true,
 };
 
 type AppState = {
@@ -35,7 +37,7 @@ type AppState = {
   conversations: Conversation[];
   updateConversation: (id: string, update: (c: Conversation) => Conversation) => void;
   /** WhatsApp connected: the assistant starts answering (demo conversations appear). */
-  goLive: () => void;
+  goLive: (patch?: Partial<BusinessProfile>) => void;
   /** « J’ai déjà un compte » in the prototype: opens a ready-made shop. */
   loadDemo: (ownerPhone: string) => void;
   reset: () => void;
@@ -55,11 +57,14 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     setConversations((list) => list.map((c) => (c.id === id ? update(c) : c)));
   }, []);
 
-  const goLive = useCallback(() => {
-    const live = { ...profile, whatsappConnected: true };
-    setProfile(live);
-    setConversations(buildMockConversations(live));
-  }, [profile]);
+  const goLive = useCallback(
+    (patch: Partial<BusinessProfile> = {}) => {
+      const live = { ...profile, ...patch, whatsappConnected: true };
+      setProfile(live);
+      setConversations(buildMockConversations(live));
+    },
+    [profile],
+  );
 
   const loadDemo = useCallback((ownerPhone: string) => {
     const demo = { ...DEMO_PROFILE, ownerPhone: ownerPhone || DEMO_PROFILE.ownerPhone };

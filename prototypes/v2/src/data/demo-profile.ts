@@ -27,4 +27,6 @@ export const DEMO_PROFILE: BusinessProfile = {
   ],
   faqs: [],
   whatsappConnected: true,
+  whatsappPhone: '+225 07 48 12 33 90',
+  announceAssistant: true,
 };

@@ -16,6 +16,7 @@ export { default as ChevronRight } from 'lucide-react-native/icons/chevron-right
 export { default as CircleAlert } from 'lucide-react-native/icons/circle-alert';
 export { default as CircleCheck } from 'lucide-react-native/icons/circle-check';
 export { default as CircleHelp } from 'lucide-react-native/icons/circle-question-mark';
+export { default as Copy } from 'lucide-react-native/icons/copy';
 export { default as CreditCard } from 'lucide-react-native/icons/credit-card';
 export { default as Gift } from 'lucide-react-native/icons/gift';
 export { default as Hand } from 'lucide-react-native/icons/hand';

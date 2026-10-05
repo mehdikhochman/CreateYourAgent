@@ -1,5 +1,5 @@
 import { newId } from '@/lib/ids';
-import { replyTo } from '@/lib/mock-assistant';
+import { replyToCustomer } from '@/lib/mock-assistant';
 import type { BusinessProfile, Conversation, ConversationAlert, Message } from '@/state/types';
 
 type Script = { name: string; phone: string; time: string; questions: string[] };
@@ -17,12 +17,12 @@ export function buildMockConversations(p: BusinessProfile): Conversation[] {
   return SCRIPTS.map((s) => {
     const messages: Message[] = [];
     let alert: ConversationAlert | null = null;
-    for (const q of s.questions) {
+    s.questions.forEach((q, i) => {
       messages.push({ id: newId('m'), role: 'customer', text: q, time: s.time });
-      const r = replyTo(p, q);
+      const r = replyToCustomer(p, q, i === 0);
       if (!r.confident && r.alert) alert = r.alert;
       messages.push({ id: newId('m'), role: 'assistant', text: r.text, time: s.time });
-    }
+    });
     return {
       id: newId('c'),
       customerName: s.name,

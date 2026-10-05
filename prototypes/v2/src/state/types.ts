@@ -53,6 +53,10 @@ export type BusinessProfile = {
   catalog: CatalogItem[];
   faqs: Faq[];
   whatsappConnected: boolean;
+  /** Business WhatsApp number Tiko answers on (« +225 07 … »). */
+  whatsappPhone: string;
+  /** Tiko says it is the shop's assistant in its first reply to each customer. */
+  announceAssistant: boolean;
 } & Record<TextField, string> &
   Record<ChoiceField, string[]>;
 

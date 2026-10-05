@@ -122,6 +122,16 @@ export function toneSample(toneValue: string, name: string): string {
   return `${greetingFor(toneValue, name)} Comment puis-je vous aider ?`;
 }
 
+function greetingReply(p: BusinessProfile): AssistantReply {
+  return { text: `${greeting(p)} Comment puis-je vous aider ?`, confident: true };
+}
+
+/** Said once per customer, so nobody believes they are chatting with a person. */
+function introduction(p: BusinessProfile): string {
+  const where = p.category === 'restaurant' ? 'du restaurant' : 'de la boutique';
+  return `Je suis l’assistant ${where} : je réponds tout de suite, et une personne prend le relais pour les commandes.`;
+}
+
 function signOff(p: BusinessProfile): string {
   if (tone(p) === 'formel') return 'Puis-je vous aider pour autre chose ?';
   if (tone(p) === 'ivoirien') return 'On est ensemble ! Autre chose ?';
@@ -359,7 +369,7 @@ export function replyTo(p: BusinessProfile, message: string): AssistantReply {
 
   // 10. Small talk.
   if (has(msg, ['bonjour', 'bonsoir', 'salut', 'coucou', 'hello', 'on dit quoi', 'cava', 'ca va', 'yo'])) {
-    return { text: `${greeting(p)} Comment puis-je vous aider ?`, confident: true };
+    return greetingReply(p);
   }
   if (has(msg, ['merci', 'ok', 'd accord', 'cool', 'c est bon'])) {
     return { text: 'Avec plaisir !', confident: true };
@@ -370,6 +380,18 @@ export function replyTo(p: BusinessProfile, message: string): AssistantReply {
     confident: false,
     alert: question(`« ${message.trim().slice(0, 60)} »`),
   };
+}
+
+/**
+ * Reply to a customer. The first reply of a conversation greets and says who
+ * is answering, unless the owner turned it off in « Mon assistant ».
+ */
+export function replyToCustomer(p: BusinessProfile, message: string, firstReply: boolean): AssistantReply {
+  const reply = replyTo(p, message);
+  if (!firstReply || !p.announceAssistant) return reply;
+  // A plain « Bonjour » already gets a greeting: don't greet twice.
+  const rest = reply.text === greetingReply(p).text ? 'Comment puis-je vous aider ?' : reply.text;
+  return { ...reply, text: `${greeting(p)} ${introduction(p)}\n\n${rest}` };
 }
 
 export function suggestedQuestions(p: BusinessProfile): string[] {
