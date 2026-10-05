@@ -9,7 +9,13 @@ import { Colors, Spacing } from '@/constants/theme';
 import { useAppState } from '@/state/app-state';
 
 // Loaded on demand: if 3D can't start on a phone, only this screen falls back.
-const RobotCanvas = lazy(() => import('@/components/robot-3d/robot-canvas'));
+const RobotCanvas = lazy(() =>
+  import('@/components/robot-3d/robot-canvas').then((m) => {
+    // A module that failed to evaluate can resolve without exports; fail loudly instead.
+    if (!m?.default) throw new Error('3D module did not load');
+    return m;
+  }),
+);
 
 function EmojiRobot() {
   return (
