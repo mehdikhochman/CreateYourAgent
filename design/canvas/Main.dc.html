@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Bienvenue</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#A34F00}a:hover{color:#7A3B00}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 40px 24px 28px; display: flex; flex-direction: column; background: #FFFFFF; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #15161A">
+<div style="display: flex; justify-content: center; align-items: center; gap: 6px">
+<span style="font-size: 20px; font-weight: 800; letter-spacing: -0.3px">CréeTon<span style="color: #C25E00">Agent</span></span>
+</div>
+<div style="position: relative; margin-top: 24px; height: 280px; border-radius: 32px; background: #FFF4E8; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 12px; box-sizing: border-box">
+<div style="position: absolute; top: 18px; left: 18px; padding: 10px 14px; border-radius: 16px 16px 16px 4px; background: #FFFFFF; font-size: 15px; font-weight: 700; color: #15161A; box-shadow: 0 1px 0 #F0DCC4">Bonjour, je suis Tiko !</div>
+<dc-import name="Mascot" pose="hello" size="210" hint-size="210px,210px"></dc-import>
+</div>
+<div style="display: flex; justify-content: center; gap: 6px; margin-top: 16px" aria-label="Écran 1 sur 3">
+<span style="width: 22px; height: 6px; border-radius: 3px; background: #15161A"></span>
+<span style="width: 6px; height: 6px; border-radius: 3px; background: #D5D5DB"></span>
+<span style="width: 6px; height: 6px; border-radius: 3px; background: #D5D5DB"></span>
+</div>
+<h1 style="margin: 24px 0 0; font-size: 30px; line-height: 36px; font-weight: 800; letter-spacing: -0.6px; text-align: center">Je réponds à vos clients sur WhatsApp</h1>
+<p style="margin: 12px 0 0; font-size: 16px; line-height: 24px; color: #5F6168; text-align: center">Prix, livraison, paiement : je réponds 24h/24 pendant que vous travaillez. Je suis prêt en 5 minutes.</p>
+<div style="flex-grow: 1"></div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<button type="button" style="height: 56px; border: 0; border-radius: 16px; background: #F77F00; color: #1A1206; font-family: inherit; font-size: 17px; font-weight: 700; cursor: pointer">Créer mon assistant</button>
+<button type="button" style="height: 48px; border: 0; background: transparent; color: #15161A; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer">J’ai déjà un compte</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Système visuel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 950px; height: 560px; box-sizing: border-box; padding: 44px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px; background: #FFFFFF; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #15161A">
+<div style="display: flex; flex-direction: column; gap: 20px">
+<span style="font-size: 13px; font-weight: 800; color: #5F6168; text-transform: uppercase; letter-spacing: 0.6px">Couleurs</span>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="height: 64px; border-radius: 14px; background: #F77F00"></span><span style="font-size: 13px; font-weight: 700">Orange Abidjan</span><span style="font-size: 12px; color: #5F6168">#F77F00 · accent</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="height: 64px; border-radius: 14px; background: #00875A"></span><span style="font-size: 13px; font-weight: 700">Vert</span><span style="font-size: 12px; color: #5F6168">#00875A · WhatsApp, succès</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="height: 64px; border-radius: 14px; background: #15161A"></span><span style="font-size: 13px; font-weight: 700">Encre</span><span style="font-size: 12px; color: #5F6168">#15161A · textes</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="height: 64px; border-radius: 14px; background: #FFF4E8; border: 1px solid #F3E2CC"></span><span style="font-size: 13px; font-weight: 700">Orange doux</span><span style="font-size: 12px; color: #5F6168">#FFF4E8 · sélection</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="height: 64px; border-radius: 14px; background: #F7F7F9; border: 1px solid #ECECEF"></span><span style="font-size: 13px; font-weight: 700">Fond</span><span style="font-size: 12px; color: #5F6168">#F7F7F9</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="height: 64px; border-radius: 14px; background: #5F6168"></span><span style="font-size: 13px; font-weight: 700">Texte secondaire</span><span style="font-size: 12px; color: #5F6168">#5F6168</span></div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<span style="font-size: 13px; font-weight: 800; color: #5F6168; text-transform: uppercase; letter-spacing: 0.6px">Typographie · Plus Jakarta Sans</span>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 30px; font-weight: 800; letter-spacing: -0.6px">Titre 30 · ExtraBold</span>
+<span style="font-size: 20px; font-weight: 700">Sous-titre 20 · Bold</span>
+<span style="font-size: 16px; font-weight: 500; color: #5F6168">Texte 16 · Medium, pour les explications</span>
+</div>
+<span style="font-size: 13px; font-weight: 800; color: #5F6168; text-transform: uppercase; letter-spacing: 0.6px">Boutons</span>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<button type="button" style="height: 56px; border: 0; border-radius: 16px; background: #F77F00; color: #1A1206; font-family: inherit; font-size: 17px; font-weight: 700; cursor: pointer">Principal : texte encre sur orange</button>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<button type="button" style="height: 52px; border: 0; border-radius: 16px; background: #00875A; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">WhatsApp</button>
+<button type="button" style="height: 52px; border: 1.5px solid #E4E4E8; border-radius: 16px; background: #FFFFFF; color: #15161A; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">Secondaire</button>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":950,"height":560}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

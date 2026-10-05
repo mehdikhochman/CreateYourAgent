@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tiko est prêt</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#A34F00}a:hover{color:#7A3B00}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; padding: 24px 24px 28px; display: flex; flex-direction: column; background: #FFF4E8; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #15161A; overflow: hidden">
+<span style="position: absolute; left: 46px; top: 92px; width: 10px; height: 16px; border-radius: 2px; background: #F77F00; transform: rotate(-24deg)"></span>
+<span style="position: absolute; left: 300px; top: 70px; width: 10px; height: 16px; border-radius: 2px; background: #00875A; transform: rotate(32deg)"></span>
+<span style="position: absolute; left: 330px; top: 190px; width: 9px; height: 14px; border-radius: 2px; background: #FFFFFF; transform: rotate(12deg)"></span>
+<span style="position: absolute; left: 70px; top: 230px; width: 9px; height: 14px; border-radius: 2px; background: #00875A; transform: rotate(48deg)"></span>
+<span style="position: absolute; left: 180px; top: 48px; width: 9px; height: 14px; border-radius: 2px; background: #FFC94D; transform: rotate(-40deg)"></span>
+<span style="position: absolute; left: 24px; top: 330px; width: 10px; height: 16px; border-radius: 2px; background: #FFC94D; transform: rotate(20deg)"></span>
+<span style="position: absolute; left: 340px; top: 320px; width: 10px; height: 16px; border-radius: 2px; background: #F77F00; transform: rotate(-12deg)"></span>
+<span style="position: absolute; left: 250px; top: 130px; width: 8px; height: 12px; border-radius: 2px; background: #F77F00; transform: rotate(60deg)"></span>
+<div style="flex-grow: 1; display: flex; align-items: center; justify-content: center">
+<dc-import name="Mascot" pose="happy" size="280" hint-size="280px,280px"></dc-import>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px; text-align: center">
+<h1 style="margin: 0; font-size: 30px; line-height: 36px; font-weight: 800; letter-spacing: -0.6px">Tiko est prêt !</h1>
+<p style="margin: 0 0 12px; font-size: 16px; line-height: 24px; color: #5F6168">Tiko connaît déjà Awa Fashion. Testez-le comme si vous étiez une cliente.</p>
+<button type="button" style="height: 56px; border: 0; border-radius: 16px; background: #F77F00; color: #1A1206; font-family: inherit; font-size: 17px; font-weight: 700; cursor: pointer">Tester Tiko maintenant</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

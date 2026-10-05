@@ -1,0 +1,140 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Category.dc.html": {
+      "h": 844,
+      "title": "2 · Activité",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Celebration.dc.html": {
+      "h": 844,
+      "title": "5 · Assistant créé",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "Channels.dc.html": {
+      "h": 844,
+      "title": "3 · Où vendez-vous",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "Correction.dc.html": {
+      "h": 844,
+      "title": "7 · Correction par action",
+      "w": 390,
+      "x": 470,
+      "y": 1244
+    },
+    "Home.dc.html": {
+      "h": 844,
+      "title": "8 · Accueil",
+      "w": 390,
+      "x": 940,
+      "y": 1244
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "title": "1 · Bienvenue",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "Mascot.dc.html": {
+      "h": 240,
+      "title": "Composant mascotte",
+      "w": 240,
+      "x": 2350,
+      "y": 2488
+    },
+    "MascotSheet.dc.html": {
+      "h": 1180,
+      "title": "Mascotte · fiche personnage",
+      "w": 1240,
+      "x": 0,
+      "y": 2488
+    },
+    "Payments.dc.html": {
+      "h": 844,
+      "title": "4 · Paiement",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "Settings.dc.html": {
+      "h": 844,
+      "title": "9 · Mon assistant",
+      "w": 390,
+      "x": 1410,
+      "y": 1244
+    },
+    "System.dc.html": {
+      "h": 560,
+      "title": "Système visuel",
+      "w": 950,
+      "x": 1320,
+      "y": 2488
+    },
+    "TestChat.dc.html": {
+      "h": 844,
+      "title": "6 · Tester (style WhatsApp)",
+      "w": 390,
+      "x": 0,
+      "y": 1244
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-05T02:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "row1": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "Inscription et création de l’assistant",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "row2": {
+      "kind": "title1",
+      "maxW": 1800,
+      "text": "Tester, corriger, gérer au quotidien",
+      "w": 240,
+      "x": 0,
+      "y": 944
+    },
+    "row3": {
+      "kind": "title1",
+      "maxW": 2590,
+      "text": "Mascotte et système visuel",
+      "w": 240,
+      "x": 0,
+      "y": 2188
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Category.dc.html",
+    "Channels.dc.html",
+    "Payments.dc.html",
+    "Celebration.dc.html",
+    "TestChat.dc.html",
+    "Correction.dc.html",
+    "Home.dc.html",
+    "Settings.dc.html",
+    "MascotSheet.dc.html",
+    "System.dc.html",
+    "Mascot.dc.html"
+  ],
+  "pages": [],
+  "title": "CréeTonAgent — Écrans haute fidélité"
+}

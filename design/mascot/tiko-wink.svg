@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="L’assistant fait un clin d’œil">
+<ellipse cx="100" cy="193" rx="46" ry="6" fill="#15161A" opacity="0.1"></ellipse>
+<rect x="50" y="128" width="14" height="38" rx="7" fill="#00875A" transform="rotate(12 57 130)"></rect>
+<rect x="136" y="96" width="14" height="38" rx="7" fill="#00875A" transform="rotate(48 143 132)"></rect>
+<rect x="60" y="122" width="80" height="56" rx="24" fill="#FFFFFF" stroke="#E2E2E7" stroke-width="2"></rect>
+<rect x="80" y="136" width="40" height="24" rx="10" fill="#15161A"></rect>
+<path d="M92 146 L98 152 L109 141" fill="none" stroke="#3BE39A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<rect x="58" y="114" width="84" height="12" rx="6" fill="#F77F00"></rect>
+<polygon points="72,120 76,116 80,120 76,124" fill="#00875A"></polygon>
+<polygon points="88,120 92,116 96,120 92,124" fill="#00875A"></polygon>
+<polygon points="104,120 108,116 112,120 108,124" fill="#00875A"></polygon>
+<polygon points="120,120 124,116 128,120 124,124" fill="#00875A"></polygon>
+<circle cx="84" cy="120" r="1.6" fill="#FFFFFF"></circle>
+<circle cx="100" cy="120" r="1.6" fill="#FFFFFF"></circle>
+<circle cx="116" cy="120" r="1.6" fill="#FFFFFF"></circle>
+<line x1="100" y1="22" x2="100" y2="36" stroke="#C9C9CF" stroke-width="4" stroke-linecap="round"></line>
+<rect x="88" y="2" width="24" height="16" rx="6" fill="#F77F00"></rect>
+<polygon points="95,17 95,23 101,17" fill="#F77F00"></polygon>
+<circle cx="34" cy="76" r="12" fill="#F77F00"></circle>
+<circle cx="34" cy="76" r="5" fill="#C25E00"></circle>
+<circle cx="166" cy="76" r="12" fill="#F77F00"></circle>
+<circle cx="166" cy="76" r="5" fill="#C25E00"></circle>
+<rect x="36" y="34" width="128" height="84" rx="30" fill="#FFFFFF" stroke="#E2E2E7" stroke-width="2"></rect>
+<rect x="50" y="48" width="100" height="56" rx="20" fill="#15161A"></rect>
+<path d="M60 57 Q70 52 84 52" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.18"></path>
+<rect x="74" y="64" width="14" height="20" rx="7" fill="#3BE39A"></rect>
+<path d="M110 76 Q119 68 128 76" fill="none" stroke="#3BE39A" stroke-width="5" stroke-linecap="round"></path>
+<ellipse cx="64" cy="92" rx="6" ry="3.5" fill="#F77F00" opacity="0.6"></ellipse>
+<ellipse cx="136" cy="92" rx="6" ry="3.5" fill="#F77F00" opacity="0.6"></ellipse>
+<path d="M88 89 Q101 99 112 87" fill="none" stroke="#3BE39A" stroke-width="4" stroke-linecap="round"></path>
+</svg>

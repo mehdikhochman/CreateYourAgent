@@ -1,4 +1,7 @@
-# CréeTonAgent — app iOS (prototype)
+# CréeTonAgent — prototype v1
+
+> Premier prototype, conservé tel quel. Le prototype actuel est dans
+> [`../v2`](../v2).
 
 Prototype cliquable de l’app : un commerçant d’Abidjan crée son assistant
 WhatsApp en quelques minutes.
@@ -40,9 +43,9 @@ Prérequis : un ordinateur avec [Node.js](https://nodejs.org) 20+ et l’app
 **Expo Go** sur l’iPhone (App Store).
 
 ```bash
-cd app
+cd prototypes/v1
 npm install
-npx expo start
+npx expo start --clear
 ```
 
 Scannez le QR code affiché avec l’appareil photo de l’iPhone → l’app s’ouvre
@@ -54,7 +57,7 @@ dans Expo Go. L’iPhone et l’ordinateur doivent être sur le même Wi-Fi (sin
 Nécessite un compte Apple Developer et un compte [Expo](https://expo.dev) (gratuit).
 
 ```bash
-cd app
+cd prototypes/v1
 npx eas-cli@latest login
 npx eas-cli@latest build --platform ios --profile production
 npx eas-cli@latest submit --platform ios

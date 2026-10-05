@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="L’assistant réfléchit et écrit">
+<ellipse cx="100" cy="193" rx="46" ry="6" fill="#15161A" opacity="0.1"></ellipse>
+<rect x="50" y="128" width="14" height="38" rx="7" fill="#00875A" transform="rotate(12 57 130)"></rect>
+<rect x="128" y="96" width="14" height="38" rx="7" fill="#00875A" transform="rotate(-30 135 132)"></rect>
+<rect x="60" y="122" width="80" height="56" rx="24" fill="#FFFFFF" stroke="#E2E2E7" stroke-width="2"></rect>
+<rect x="80" y="136" width="40" height="24" rx="10" fill="#15161A"></rect>
+<circle cx="91" cy="148" r="3" fill="#F77F00"></circle>
+<circle cx="100" cy="148" r="3" fill="#F77F00" opacity="0.7"></circle>
+<circle cx="109" cy="148" r="3" fill="#F77F00" opacity="0.4"></circle>
+<rect x="58" y="114" width="84" height="12" rx="6" fill="#F77F00"></rect>
+<polygon points="72,120 76,116 80,120 76,124" fill="#00875A"></polygon>
+<polygon points="88,120 92,116 96,120 92,124" fill="#00875A"></polygon>
+<polygon points="104,120 108,116 112,120 108,124" fill="#00875A"></polygon>
+<polygon points="120,120 124,116 128,120 124,124" fill="#00875A"></polygon>
+<circle cx="84" cy="120" r="1.6" fill="#FFFFFF"></circle>
+<circle cx="100" cy="120" r="1.6" fill="#FFFFFF"></circle>
+<circle cx="116" cy="120" r="1.6" fill="#FFFFFF"></circle>
+<line x1="100" y1="22" x2="100" y2="36" stroke="#C9C9CF" stroke-width="4" stroke-linecap="round"></line>
+<rect x="88" y="2" width="24" height="16" rx="6" fill="#F77F00"></rect>
+<polygon points="95,17 95,23 101,17" fill="#F77F00"></polygon>
+<circle cx="34" cy="76" r="12" fill="#F77F00"></circle>
+<circle cx="34" cy="76" r="5" fill="#C25E00"></circle>
+<circle cx="166" cy="76" r="12" fill="#F77F00"></circle>
+<circle cx="166" cy="76" r="5" fill="#C25E00"></circle>
+<rect x="36" y="34" width="128" height="84" rx="30" fill="#FFFFFF" stroke="#E2E2E7" stroke-width="2"></rect>
+<rect x="50" y="48" width="100" height="56" rx="20" fill="#15161A"></rect>
+<path d="M60 57 Q70 52 84 52" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.18"></path>
+<rect x="80" y="60" width="12" height="18" rx="6" fill="#3BE39A"></rect>
+<rect x="116" y="60" width="12" height="18" rx="6" fill="#3BE39A"></rect>
+<line x1="92" y1="93" x2="108" y2="90" stroke="#3BE39A" stroke-width="4" stroke-linecap="round"></line>
+<circle cx="172" cy="30" r="3.5" fill="#F77F00"></circle>
+<circle cx="182" cy="19" r="4.5" fill="#F77F00" opacity="0.7"></circle>
+<circle cx="193" cy="8" r="5.5" fill="#F77F00" opacity="0.4"></circle>
+</svg>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tester mon assistant</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#A34F00}a:hover{color:#7A3B00}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; display: flex; flex-direction: column; background: #EFEAE2; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #15161A">
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 8px; background: #FFFFFF; border-bottom: 1px solid #E4E4E8">
+<button type="button" aria-label="Retour" style="width: 44px; height: 44px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; color: #15161A; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+</button>
+<div style="width: 40px; height: 40px; border-radius: 20px; background: #FFF4E8; display: flex; align-items: center; justify-content: center; overflow: hidden">
+<dc-import name="Mascot" pose="hello" size="36" hint-size="36px,36px"></dc-import>
+</div>
+<div style="display: flex; flex-direction: column; flex-grow: 1">
+<span style="font-size: 16px; font-weight: 700">Awa Fashion</span>
+<span style="font-size: 12px; color: #00704A; font-weight: 600">Mode test · vous jouez la cliente</span>
+</div>
+</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px; padding: 16px 12px; overflow: hidden">
+<span style="align-self: center; padding: 6px 12px; border-radius: 8px; background: #FFFFFF; font-size: 12px; font-weight: 600; color: #5F6168">Aujourd’hui</span>
+<div style="align-self: flex-end; max-width: 78%; padding: 8px 12px 6px; border-radius: 14px 14px 4px 14px; background: #D9FDD3; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; line-height: 21px">Je veux payer sac oh</span>
+<span style="align-self: flex-end; display: flex; align-items: center; gap: 3px; font-size: 11px; color: #5F6168">10:42
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F8FD8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13l4 4 8-9"></path><path d="M10 17l2 0 9-10"></path></svg>
+</span>
+</div>
+<div style="align-self: flex-start; max-width: 82%; padding: 10px 12px 8px; border-radius: 14px 14px 14px 4px; background: #FFFFFF; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; line-height: 21px">Très bon choix ! Sac à main : <b>8 500 F</b>. Le responsable vous confirme la commande et la livraison dans quelques minutes.</span>
+<span style="align-self: flex-end; font-size: 11px; color: #5F6168">10:42</span>
+<div style="display: flex; gap: 8px; padding-top: 6px; border-top: 1px solid #EDEDF0">
+<button type="button" style="display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 17px; border: 1.5px solid #E4E4E8; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; color: #15161A; cursor: pointer">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v9H4v-9h3z"></path><path d="M7 11l4-8a2 2 0 0 1 2 2v4h5a2 2 0 0 1 2 2l-1.5 7a2 2 0 0 1-2 1.6H7"></path></svg>
+Bonne réponse</button>
+<button type="button" style="display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 17px; border: 1.5px solid #E4E4E8; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; color: #15161A; cursor: pointer">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L20 8l-4-4L4 16v4z"></path></svg>
+Corriger</button>
+</div>
+</div>
+<div style="align-self: flex-start; display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 12px; background: #FFF4E8; font-size: 12px; font-weight: 600; color: #8A4300">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10 21a2 2 0 0 0 4 0"></path></svg>
+Commande : vous recevrez une notification
+</div>
+<div style="align-self: flex-end; max-width: 78%; padding: 8px 12px 6px; border-radius: 14px 14px 4px 14px; background: #D9FDD3; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; line-height: 21px">Vous livrez à Abobo ?</span>
+<span style="align-self: flex-end; display: flex; align-items: center; gap: 3px; font-size: 11px; color: #5F6168">10:43
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F8FD8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13l4 4 8-9"></path><path d="M10 17l2 0 9-10"></path></svg>
+</span>
+</div>
+<div style="align-self: flex-start; display: flex; align-items: center; gap: 8px">
+<div style="width: 28px; height: 28px; border-radius: 14px; background: #FFF4E8; display: flex; align-items: center; justify-content: center; overflow: hidden">
+<dc-import name="Mascot" pose="think" size="26" hint-size="26px,26px"></dc-import>
+</div>
+<div style="display: flex; gap: 4px; padding: 12px 14px; border-radius: 14px 14px 14px 4px; background: #FFFFFF" aria-label="L’assistant écrit">
+<span style="width: 7px; height: 7px; border-radius: 4px; background: #9C9EA6"></span>
+<span style="width: 7px; height: 7px; border-radius: 4px; background: #B9BAC2"></span>
+<span style="width: 7px; height: 7px; border-radius: 4px; background: #D5D5DB"></span>
+</div>
+</div>
+</div>
+<div style="display: flex; gap: 8px; padding: 0 12px 10px; overflow: hidden">
+<button type="button" style="flex-shrink: 0; height: 36px; padding: 0 14px; border-radius: 18px; border: 1.5px solid #E4C9A8; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; color: #8A4300; cursor: pointer">C’est combien ?</button>
+<button type="button" style="flex-shrink: 0; height: 36px; padding: 0 14px; border-radius: 18px; border: 1.5px solid #E4C9A8; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; color: #8A4300; cursor: pointer">Ya quoi de bon ?</button>
+<button type="button" style="flex-shrink: 0; height: 36px; padding: 0 14px; border-radius: 18px; border: 1.5px solid #E4C9A8; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; color: #8A4300; cursor: pointer">Je paie par Wave ?</button>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px 12px; background: #F6F3EE">
+<label for="msg" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Message du client</label>
+<input id="msg" placeholder="Écrivez comme un client…" style="flex-grow: 1; height: 46px; box-sizing: border-box; border: 0; border-radius: 23px; background: #FFFFFF; padding: 0 18px; font-family: inherit; font-size: 15px; color: #15161A">
+<button type="button" aria-label="Note vocale" style="width: 46px; height: 46px; flex-shrink: 0; border: 0; border-radius: 23px; background: #00875A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>
+</button>
+</div>
+<div style="padding: 0 16px 20px; background: #F6F3EE">
+<button type="button" style="width: 100%; height: 52px; border: 0; border-radius: 16px; background: #00875A; color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer">
+<img src="/_blob/f99e124bb0647deb4cab57f18683e528" alt="" style="width: 22px; height: 22px; background: #FFFFFF; border-radius: 11px; padding: 2px; box-sizing: border-box">
+C’est bon, connecter WhatsApp</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
