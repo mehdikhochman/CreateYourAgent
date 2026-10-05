@@ -31,3 +31,15 @@ npx expo start --clear
 
 Scannez le QR code avec l’iPhone (app **Expo Go**). Détails, version web et APK
 Android : voir [`prototypes/v2/README.md`](prototypes/v2/README.md).
+
+## Plugins Claude du projet
+
+`.claude/settings.json` active deux plugins d’Anthropic pour chaque session
+Claude Code ouverte sur ce dépôt :
+
+- **design** : `/design:ux-copy`, `/design:design-critique`, `/design:accessibility-review`,
+  `/design:user-research`, `/design:research-synthesis`, `/design:design-system`, `/design:design-handoff`
+- **engineering** : `/engineering:system-design`, `/engineering:architecture`, `/engineering:testing-strategy`,
+  `/engineering:debug`, `/engineering:deploy-checklist`, `/engineering:code-review`, …
+
+Tapez `/` dans Claude pour voir la liste.
